@@ -14,7 +14,7 @@ func NewImageDataServiceUseCase(imageStoragePort spi.IImageStoragePort) *ImageDa
 }
 
 func (i ImageDataServiceUseCase) SaveImageData(imageData *model.ImageData) (imageUrl string, err error) {
-	imageUrl, err = i.imageStoragePort.SaveImage(imageData)
+	imageUrl, err = i.imageStoragePort.SaveImageInStorage(imageData)
 
 	if err != nil {
 		return "", err

@@ -14,7 +14,7 @@ func NewImageUseCase(imagePersistencePort spi.IImagePersistencePort) *ImageUseCa
 }
 
 func (i ImageUseCase) SaveImage(image *model.Image) error {
-	err := i.imagePersistencePort.SaveImage(image)
+	err := i.imagePersistencePort.SaveImageInDatabase(image)
 
 	if err != nil {
 		return err

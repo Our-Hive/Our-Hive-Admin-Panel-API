@@ -9,10 +9,14 @@ import (
 )
 
 type GenerationUseCase struct {
-	imageDataServicePort            api.IImageDataServicePort
 	imageServicePort                api.IImageServicePort
+	imageDataServicePort            api.IImageDataServicePort
 	promptClassificationServicePort api.IPromptClassificationServicePort
 	imageGenerationServicePort      api.IImageGenerationServicePort
+}
+
+func NewGenerationUseCase(imageServicePort api.IImageServicePort, imageDataServicePort api.IImageDataServicePort, promptClassificationServicePort api.IPromptClassificationServicePort, imageGenerationServicePort api.IImageGenerationServicePort) *GenerationUseCase {
+	return &GenerationUseCase{imageServicePort: imageServicePort, imageDataServicePort: imageDataServicePort, promptClassificationServicePort: promptClassificationServicePort, imageGenerationServicePort: imageGenerationServicePort}
 }
 
 func (g GenerationUseCase) GenerateImage(prompt string, filename string) (imageUrl string, err error) {
