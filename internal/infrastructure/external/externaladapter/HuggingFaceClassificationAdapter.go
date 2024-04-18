@@ -3,6 +3,7 @@ package externaladapter
 import (
 	"context"
 	"fmt"
+	"github.com/Our-Hive/Our-Hive-Admin-Panel-API/internal/configuration"
 	"github.com/Our-Hive/Our-Hive-Admin-Panel-API/internal/infrastructure/external/externalconstant"
 	"github.com/Our-Hive/Our-Hive-Admin-Panel-API/internal/infrastructure/external/externalerror"
 	"github.com/hupe1980/go-huggingface"
@@ -10,6 +11,12 @@ import (
 
 type HuggingFaceClassificationAdapter struct {
 	inferenceClient *huggingface.InferenceClient
+}
+
+func NewHuggingFaceClassificationAdapter() *HuggingFaceClassificationAdapter {
+	return &HuggingFaceClassificationAdapter{
+		huggingface.NewInferenceClient(configuration.HUGGING_FACE_TOKEN),
+	}
 }
 
 func (h HuggingFaceClassificationAdapter) IsEthical(prompt string) (bool, error) {
