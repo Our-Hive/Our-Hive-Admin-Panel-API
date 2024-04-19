@@ -11,6 +11,7 @@ import (
 	"net/http"
 )
 
+// StableDiffusionAdapter implements IImageGenerationServicePort
 type StableDiffusionAdapter struct {
 	token string
 }

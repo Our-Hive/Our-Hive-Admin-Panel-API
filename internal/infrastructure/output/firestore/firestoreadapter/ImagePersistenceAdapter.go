@@ -5,6 +5,7 @@ import (
 	"github.com/Our-Hive/Our-Hive-Admin-Panel-API/internal/infrastructure/output/firestore/repository"
 )
 
+// ImagePersistenceAdapter implements IImagePersistencePort
 type ImagePersistenceAdapter struct {
 	imageRepository repository.ImageFirestoreRepository
 }

@@ -5,6 +5,7 @@ import (
 	"github.com/Our-Hive/Our-Hive-Admin-Panel-API/internal/domain/spi"
 )
 
+// ImageUseCase implements IImageServicePort
 type ImageUseCase struct {
 	imagePersistencePort spi.IImagePersistencePort
 }

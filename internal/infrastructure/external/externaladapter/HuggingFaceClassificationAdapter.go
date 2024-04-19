@@ -9,6 +9,7 @@ import (
 	"github.com/hupe1980/go-huggingface"
 )
 
+// HuggingFaceClassificationAdapter implements IPromptClassificationServicePort
 type HuggingFaceClassificationAdapter struct {
 	inferenceClient *huggingface.InferenceClient
 }

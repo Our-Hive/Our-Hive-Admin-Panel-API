@@ -8,6 +8,7 @@ import (
 	"time"
 )
 
+// GenerationUseCase implements IGenerationServicePort
 type GenerationUseCase struct {
 	imageServicePort                api.IImageServicePort
 	imageDataServicePort            api.IImageDataServicePort

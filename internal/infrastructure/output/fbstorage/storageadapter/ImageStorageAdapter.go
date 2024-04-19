@@ -5,7 +5,7 @@ import (
 	"github.com/Our-Hive/Our-Hive-Admin-Panel-API/internal/infrastructure/output/fbstorage/bucket"
 )
 
-// ImageStorageAdapter implements IIImageStoragePort
+// ImageStorageAdapter implements IImageStoragePort
 type ImageStorageAdapter struct {
 	imageBucket bucket.ImageBucket
 }
