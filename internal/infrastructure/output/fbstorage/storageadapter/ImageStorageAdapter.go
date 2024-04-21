@@ -7,7 +7,11 @@ import (
 
 // ImageStorageAdapter implements IImageStoragePort
 type ImageStorageAdapter struct {
-	imageBucket bucket.ImageBucket
+	imageBucket *bucket.ImageBucket
+}
+
+func NewImageStorageAdapter(imageBucket *bucket.ImageBucket) *ImageStorageAdapter {
+	return &ImageStorageAdapter{imageBucket: imageBucket}
 }
 
 func (i ImageStorageAdapter) SaveImageInStorage(image *model.ImageData) (fileUrl string, err error) {

@@ -12,12 +12,17 @@ import (
 
 type ImageBucket struct {
 	bucket *storage.BucketHandle
+	ctx    context.Context
+}
+
+func NewImageBucket(bucket *storage.BucketHandle, ctx context.Context) *ImageBucket {
+	return &ImageBucket{bucket: bucket, ctx: ctx}
 }
 
 func (ib *ImageBucket) SaveImageToFBStorage(imageData *model.ImageData) (url string, err error) {
 	objectHandle := ib.bucket.Object(imageData.FileName + ".jpg")
 
-	writer := objectHandle.NewWriter(context.Background())
+	writer := objectHandle.NewWriter(ib.ctx)
 	id := uuid.New()
 
 	imageData.ID = id.String()

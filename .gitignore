@@ -30,4 +30,4 @@ go.work
 
 .env
 
-our-hive-firebase-adminsdk-nc2p7-1d08d78884.json
+internal/infrastructure/adminsdk.json

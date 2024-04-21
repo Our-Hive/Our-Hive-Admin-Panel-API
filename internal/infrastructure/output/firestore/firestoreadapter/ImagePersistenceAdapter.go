@@ -7,7 +7,11 @@ import (
 
 // ImagePersistenceAdapter implements IImagePersistencePort
 type ImagePersistenceAdapter struct {
-	imageRepository repository.ImageFirestoreRepository
+	imageRepository *repository.ImageFirestoreRepository
+}
+
+func NewImagePersistenceAdapter(imageRepository *repository.ImageFirestoreRepository) *ImagePersistenceAdapter {
+	return &ImagePersistenceAdapter{imageRepository: imageRepository}
 }
 
 func (i ImagePersistenceAdapter) SaveImageInDatabase(image *model.Image) error {
@@ -18,4 +22,14 @@ func (i ImagePersistenceAdapter) SaveImageInDatabase(image *model.Image) error {
 	}
 
 	return nil
+}
+
+func (i ImagePersistenceAdapter) GetImageFromDatabaseByName(fileName string) (*model.Image, error) {
+	image, err := i.imageRepository.GetImageFromCollectionByName(fileName)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return image, nil
 }

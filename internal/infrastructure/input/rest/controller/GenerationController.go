@@ -11,6 +11,10 @@ type GenerationController struct {
 	generationHandler handler.IGenerationHandler
 }
 
+func (g GenerationController) InitRoutes(router *gin.Engine) {
+	router.POST("/generation", g.GenerateIAImage)
+}
+
 func NewGenerationController(generationHandler handler.IGenerationHandler) *GenerationController {
 	return &GenerationController{generationHandler: generationHandler}
 }

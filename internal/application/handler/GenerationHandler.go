@@ -19,7 +19,7 @@ func NewGenerationHandler(generationUseCase api.IGenerationServicePort) *Generat
 	return &GenerationHandler{generationUseCase: generationUseCase}
 }
 
-func (g GenerationHandler) GenerateIAImage(request *request.GenerateIAImage) (response *response.GenerateIAImage, httpStatus int, err error) {
+func (g GenerationHandler) GenerateIAImage(request *request.GenerateIAImage) (resp *response.GenerateIAImage, httpStatus int, err error) {
 	validate := validator.New()
 
 	err = validate.Struct(request)
@@ -31,15 +31,21 @@ func (g GenerationHandler) GenerateIAImage(request *request.GenerateIAImage) (re
 
 	url, err := g.generationUseCase.GenerateImage(request.Prompt, request.FileName)
 
-	if errors.Is(err, &domainerror.IsNotEthicalPromptError{}) {
-		return nil, http.StatusUnprocessableEntity, err
+	var imageAlreadyExistsError *domainerror.ImageAlreadyExistsError
+	if errors.As(err, &imageAlreadyExistsError) {
+		return nil, http.StatusConflict, imageAlreadyExistsError
+	}
+
+	var notEthicalPromptError *domainerror.IsNotEthicalPromptError
+	if errors.As(err, &notEthicalPromptError) {
+		return nil, http.StatusUnprocessableEntity, notEthicalPromptError
 	}
 
 	if err != nil {
 		return nil, http.StatusInternalServerError, err
 	}
 
-	response.Url = url
+	responseBody := &response.GenerateIAImage{Url: url}
 
-	return response, http.StatusOK, nil
+	return responseBody, http.StatusCreated, nil
 }

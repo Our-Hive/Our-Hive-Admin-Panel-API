@@ -10,7 +10,7 @@ type ImageDataUseCase struct {
 	imageStoragePort spi.IImageStoragePort
 }
 
-func NewImageDataServiceUseCase(imageStoragePort spi.IImageStoragePort) *ImageDataUseCase {
+func NewImageDataUseCase(imageStoragePort spi.IImageStoragePort) *ImageDataUseCase {
 	return &ImageDataUseCase{imageStoragePort: imageStoragePort}
 }
 
