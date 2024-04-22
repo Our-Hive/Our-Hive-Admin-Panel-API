@@ -9,6 +9,7 @@ import (
 var (
 	HUGGING_FACE_TOKEN string
 	FB_STORAGE_BUCKET  string
+	SECRET             string
 )
 
 func LoadEnvVariables() {
@@ -19,4 +20,5 @@ func LoadEnvVariables() {
 
 	HUGGING_FACE_TOKEN = os.Getenv("HUGGING_FACE_TOKEN")
 	FB_STORAGE_BUCKET = os.Getenv("FB_STORAGE_BUCKET")
+	SECRET = os.Getenv("SECRET")
 }
