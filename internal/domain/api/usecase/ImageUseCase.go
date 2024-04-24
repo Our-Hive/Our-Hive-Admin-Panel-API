@@ -1,6 +1,8 @@
 package usecase
 
 import (
+	"fmt"
+	"github.com/Our-Hive/Our-Hive-Admin-Panel-API/internal/domain/domainconstant"
 	"github.com/Our-Hive/Our-Hive-Admin-Panel-API/internal/domain/domainerror"
 	"github.com/Our-Hive/Our-Hive-Admin-Panel-API/internal/domain/model"
 	"github.com/Our-Hive/Our-Hive-Admin-Panel-API/internal/domain/spi"
@@ -43,4 +45,18 @@ func (i ImageUseCase) GetImageByName(fileName string) (*model.Image, error) {
 	}
 
 	return image, nil
+}
+
+func (i ImageUseCase) GetAllImages(pageSize int, startAfter string) ([]*model.Image, error) {
+	images, err := i.imagePersistencePort.GetAllImagesFromDatabase(pageSize, startAfter)
+
+	if err != nil {
+		return nil, err
+	}
+
+	if len(images) == 0 {
+		return nil, &domainerror.NoDataFound{Message: fmt.Sprintf(domainconstant.NoDataFoundErrorMessage, "images")}
+	}
+
+	return images, nil
 }
