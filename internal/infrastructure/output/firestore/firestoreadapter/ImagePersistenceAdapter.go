@@ -33,3 +33,13 @@ func (i ImagePersistenceAdapter) GetImageFromDatabaseByName(fileName string) (*m
 
 	return image, nil
 }
+
+func (i ImagePersistenceAdapter) GetAllImagesFromDatabase(pageSize int, startAfter string) ([]*model.Image, error) {
+	images, err := i.imageRepository.GetAllImagesFromCollection(pageSize, startAfter)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return images, nil
+}

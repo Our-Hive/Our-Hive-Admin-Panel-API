@@ -45,10 +45,15 @@ func InitializeFirebase() {
 
 }
 
-func InitializeGenerationController() *controller.GenerationController {
+func InitializeImageUseCase() *usecase.ImageUseCase {
 	imageRepository := repository.NewImageFireStoreRepository(firestoreClient, ctx)
 	imagePersistenceAdapter := firestoreadapter.NewImagePersistenceAdapter(imageRepository)
-	imageUseCase := usecase.NewImageUseCase(imagePersistenceAdapter)
+
+	return usecase.NewImageUseCase(imagePersistenceAdapter)
+}
+
+func InitializeGenerationController() *controller.GenerationController {
+	imageUseCase := InitializeImageUseCase()
 
 	imageBucket := bucket.NewImageBucket(bucketHandle, ctx)
 	imageStorageAdapter := storageadapter.NewImageStorageAdapter(imageBucket)
@@ -61,4 +66,11 @@ func InitializeGenerationController() *controller.GenerationController {
 	generarationHandler := handler.NewGenerationHandler(generationUseCase)
 
 	return controller.NewGenerationController(generarationHandler)
+}
+
+func InitializeImageController() *controller.ImageController {
+	imageUseCase := InitializeImageUseCase()
+	imageHandler := handler.NewImageHandler(imageUseCase)
+
+	return controller.NewImageController(imageHandler)
 }

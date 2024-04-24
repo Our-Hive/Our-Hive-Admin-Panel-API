@@ -15,6 +15,9 @@ func main() {
 	generationController := infrastructure.InitializeGenerationController()
 	generationController.InitRoutes(router)
 
+	imageController := infrastructure.InitializeImageController()
+	imageController.InitRoutes(router)
+
 	err := router.Run()
 
 	if err != nil {
