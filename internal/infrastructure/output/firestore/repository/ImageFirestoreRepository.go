@@ -55,3 +55,45 @@ func (i ImageFirestoreRepository) GetImageFromCollectionByName(fileName string) 
 
 	return nil, nil
 }
+
+func (i ImageFirestoreRepository) GetAllImagesFromCollection(pageSize int, startAfter string) ([]*model.Image, error) {
+	var images []*model.Image
+	var query firestore.Query
+
+	if startAfter != "" {
+		doc, err := i.client.Collection(i.collection).Doc(startAfter).Get(i.ctx)
+
+		if err != nil {
+			return nil, err
+		}
+
+		query = i.client.Collection(i.collection).StartAfter(doc.Data())
+	} else {
+		query = i.client.Collection(i.collection).Limit(pageSize)
+	}
+
+	iter := query.Documents(i.ctx)
+
+	for {
+		doc, err := iter.Next()
+
+		if errors.Is(err, iterator.Done) {
+			break
+		}
+
+		if err != nil {
+			return nil, err
+		}
+
+		image := &model.Image{}
+		err = doc.DataTo(image)
+
+		if err != nil {
+			return nil, err
+		}
+
+		images = append(images, image)
+	}
+
+	return images, nil
+}
