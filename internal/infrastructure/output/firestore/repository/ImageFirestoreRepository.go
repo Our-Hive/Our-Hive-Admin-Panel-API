@@ -20,7 +20,7 @@ func NewImageFireStoreRepository(client *firestore.Client, ctx context.Context) 
 }
 
 func (i ImageFirestoreRepository) SaveImageInCollection(image *model.Image) error {
-	_, _, err := i.client.Collection(i.collection).Add(i.ctx, image)
+	_, err := i.client.Collection(i.collection).Doc(image.ID).Set(i.ctx, image)
 
 	if err != nil {
 		return err
@@ -67,9 +67,9 @@ func (i ImageFirestoreRepository) GetAllImagesFromCollection(pageSize int, start
 			return nil, err
 		}
 
-		query = i.client.Collection(i.collection).StartAfter(doc.Data())
+		query = i.client.Collection(i.collection).OrderBy("UpdatedTime", firestore.Desc).StartAfter(doc.Data()["Name"]).Limit(pageSize)
 	} else {
-		query = i.client.Collection(i.collection).Limit(pageSize)
+		query = i.client.Collection(i.collection).OrderBy("UpdatedTime", firestore.Desc).Limit(pageSize)
 	}
 
 	iter := query.Documents(i.ctx)
