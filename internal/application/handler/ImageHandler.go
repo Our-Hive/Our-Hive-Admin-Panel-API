@@ -2,9 +2,10 @@ package handler
 
 import (
 	"errors"
+	"github.com/Our-Hive/Our-Hive-Admin-Panel-API/internal/application/dto/response"
+	"github.com/Our-Hive/Our-Hive-Admin-Panel-API/internal/application/mapper"
 	"github.com/Our-Hive/Our-Hive-Admin-Panel-API/internal/domain/api"
 	"github.com/Our-Hive/Our-Hive-Admin-Panel-API/internal/domain/domainerror"
-	"github.com/Our-Hive/Our-Hive-Admin-Panel-API/internal/domain/model"
 	"net/http"
 )
 
@@ -17,8 +18,8 @@ func NewImageHandler(imageServicePort api.IImageServicePort) *ImageHandler {
 	return &ImageHandler{imageServicePort: imageServicePort}
 }
 
-func (i ImageHandler) GetAll(pageSize int, startAfter string) (images []*model.Image, httpStatus int, err error) {
-	images, err = i.imageServicePort.GetAllImages(pageSize, startAfter)
+func (i ImageHandler) GetAll(pageSize int, startAfter string) (images []*response.Image, httpStatus int, err error) {
+	retrievedImages, err := i.imageServicePort.GetAllImages(pageSize, startAfter)
 
 	var noDataFoundError *domainerror.NoDataFound
 	if errors.As(err, &noDataFoundError) {
@@ -28,6 +29,8 @@ func (i ImageHandler) GetAll(pageSize int, startAfter string) (images []*model.I
 	if err != nil {
 		return nil, http.StatusInternalServerError, err
 	}
+
+	images = mapper.FromImagesToImageResponses(retrievedImages)
 
 	return images, http.StatusOK, nil
 }
