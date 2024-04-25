@@ -1,0 +1,94 @@
+definitions:
+  request.GenerateIAImage:
+    properties:
+      file_name:
+        minLength: 1
+        type: string
+      prompt:
+        minLength: 1
+        type: string
+    required:
+    - file_name
+    - prompt
+    type: object
+  response.GenerateIAImage:
+    properties:
+      url:
+        type: string
+    type: object
+  response.Image:
+    properties:
+      created_time:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      url:
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /generation:
+    post:
+      consumes:
+      - application/json
+      description: Generate an IA image
+      parameters:
+      - description: Generate IA Image
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/request.GenerateIAImage'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/response.GenerateIAImage'
+        "400":
+          description: Bad Request
+        "409":
+          description: Conflict
+        "422":
+          description: Unprocessable Entity
+      security:
+      - ApiKeyAuth: []
+      summary: Generate IA Image
+      tags:
+      - generation
+  /images:
+    get:
+      consumes:
+      - application/json
+      description: Get all images with pagination
+      parameters:
+      - description: Page size
+        in: query
+        name: size
+        type: integer
+      - description: Start after
+        in: query
+        name: startAfter
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            items:
+              $ref: '#/definitions/response.Image'
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get all images
+      tags:
+      - images
+swagger: "2.0"

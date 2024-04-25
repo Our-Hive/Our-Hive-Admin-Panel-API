@@ -20,6 +20,19 @@ func NewGenerationController(generationHandler handler.IGenerationHandler) *Gene
 	return &GenerationController{generationHandler: generationHandler}
 }
 
+// GenerateIAImage godoc
+// @Summary Generate IA Image
+// @Description Generate an IA image
+// @Tags generation
+// @Accept  json
+// @Produce  json
+// @Security ApiKeyAuth
+// @Param body body request.GenerateIAImage true "Generate IA Image"
+// @Success 200 {object} response.GenerateIAImage "Success"
+// @Failure 400
+// @Failure 409
+// @Failure 422
+// @Router /generation [post]
 func (g GenerationController) GenerateIAImage(c *gin.Context) {
 	var body request.GenerateIAImage
 	if err := c.ShouldBindJSON(&body); err != nil {

@@ -19,6 +19,17 @@ func NewImageController(imageHandler handler.IImageHandler) *ImageController {
 	return &ImageController{imageHandler: imageHandler}
 }
 
+// GetAll godoc
+// @Summary Get all images
+// @Description Get all images with pagination
+// @Tags images
+// @Accept  json
+// @Produce  json
+// @Param size query int false "Page size"
+// @Param startAfter query string false "Start after"
+// @Success 200 {array} response.Image "Success"
+// @Failure 404
+// @Router /images [get]
 func (i ImageController) GetAll(c *gin.Context) {
 	pageSize, err := strconv.Atoi(c.DefaultQuery("size", "10"))
 
