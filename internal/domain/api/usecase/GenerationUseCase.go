@@ -35,7 +35,7 @@ func (g GenerationUseCase) GenerateImage(prompt string, filename string) (imageU
 
 	generatedImage, err := g.imageGenerationServicePort.GenerateImage(prompt)
 
-	imageData.FileName = filename
+	imageData.FileName = filename + ".jpg"
 	imageData.Data = generatedImage
 
 	imageUrl, savedImageData, err := g.imageDataServicePort.SaveImageData(&imageData)

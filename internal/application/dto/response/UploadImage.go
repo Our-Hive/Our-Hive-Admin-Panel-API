@@ -1,5 +1,5 @@
 package response
 
-type GenerateIAImage struct {
+type UploadImage struct {
 	Url string `json:"url"`
 }

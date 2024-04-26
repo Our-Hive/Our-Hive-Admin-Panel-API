@@ -8,6 +8,7 @@ import (
 	"github.com/Our-Hive/Our-Hive-Admin-Panel-API/internal/infrastructure/output/fbstorage/storageconstant"
 	"github.com/google/uuid"
 	"log"
+	"strings"
 )
 
 type ImageBucket struct {
@@ -20,7 +21,7 @@ func NewImageBucket(bucket *storage.BucketHandle, ctx context.Context) *ImageBuc
 }
 
 func (ib *ImageBucket) SaveImageToFBStorage(imageData *model.ImageData) (url string, err error) {
-	objectHandle := ib.bucket.Object(imageData.FileName + ".jpg")
+	objectHandle := ib.bucket.Object(imageData.FileName)
 
 	writer := objectHandle.NewWriter(ib.ctx)
 	id := uuid.New()
@@ -45,5 +46,7 @@ func (ib *ImageBucket) SaveImageToFBStorage(imageData *model.ImageData) (url str
 }
 
 func (ib *ImageBucket) GetImageUrl(filename string, id string) string {
+	// if filename has a space, replace it with %20
+	filename = strings.ReplaceAll(filename, " ", "%20")
 	return fmt.Sprintf(storageconstant.BucketUrl, filename, id)
 }

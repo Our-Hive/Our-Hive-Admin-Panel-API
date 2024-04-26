@@ -48,7 +48,7 @@ const docTemplate = `{
                     "200": {
                         "description": "Success",
                         "schema": {
-                            "$ref": "#/definitions/response.GenerateIAImage"
+                            "$ref": "#/definitions/response.UploadImage"
                         }
                     },
                     "400": {
@@ -101,11 +101,40 @@ const docTemplate = `{
                         }
                     },
                     "404": {
-                        "description": "Not Found",
+                        "description": "Not Found"
+                    }
+                }
+            },
+            "post": {
+                "description": "Upload an image",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "images"
+                ],
+                "summary": "Upload an image",
+                "parameters": [
+                    {
+                        "type": "file",
+                        "description": "Image",
+                        "name": "image",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": true
+                            "$ref": "#/definitions/response.UploadImage"
                         }
+                    },
+                    "400": {
+                        "description": "Bad Request"
                     }
                 }
             }
@@ -129,14 +158,6 @@ const docTemplate = `{
                 }
             }
         },
-        "response.GenerateIAImage": {
-            "type": "object",
-            "properties": {
-                "url": {
-                    "type": "string"
-                }
-            }
-        },
         "response.Image": {
             "type": "object",
             "properties": {
@@ -149,6 +170,14 @@ const docTemplate = `{
                 "name": {
                     "type": "string"
                 },
+                "url": {
+                    "type": "string"
+                }
+            }
+        },
+        "response.UploadImage": {
+            "type": "object",
+            "properties": {
                 "url": {
                     "type": "string"
                 }

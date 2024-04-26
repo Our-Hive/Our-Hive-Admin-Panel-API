@@ -6,5 +6,5 @@ import (
 )
 
 type IGenerationHandler interface {
-	GenerateIAImage(request *request.GenerateIAImage) (response *response.GenerateIAImage, httpStatus int, err error)
+	GenerateIAImage(request *request.GenerateIAImage) (response *response.UploadImage, httpStatus int, err error)
 }
