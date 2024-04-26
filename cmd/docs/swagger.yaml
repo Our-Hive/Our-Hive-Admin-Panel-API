@@ -11,11 +11,6 @@ definitions:
     - file_name
     - prompt
     type: object
-  response.GenerateIAImage:
-    properties:
-      url:
-        type: string
-    type: object
   response.Image:
     properties:
       created_time:
@@ -24,6 +19,11 @@ definitions:
         type: string
       name:
         type: string
+      url:
+        type: string
+    type: object
+  response.UploadImage:
+    properties:
       url:
         type: string
     type: object
@@ -48,7 +48,7 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: '#/definitions/response.GenerateIAImage'
+            $ref: '#/definitions/response.UploadImage'
         "400":
           description: Bad Request
         "409":
@@ -85,10 +85,29 @@ paths:
             type: array
         "404":
           description: Not Found
-          schema:
-            additionalProperties: true
-            type: object
       summary: Get all images
+      tags:
+      - images
+    post:
+      consumes:
+      - multipart/form-data
+      description: Upload an image
+      parameters:
+      - description: Image
+        in: formData
+        name: image
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/response.UploadImage'
+        "400":
+          description: Bad Request
+      summary: Upload an image
       tags:
       - images
 swagger: "2.0"

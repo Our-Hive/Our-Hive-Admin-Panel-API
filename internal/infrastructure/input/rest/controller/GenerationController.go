@@ -28,7 +28,7 @@ func NewGenerationController(generationHandler handler.IGenerationHandler) *Gene
 // @Produce  json
 // @Security ApiKeyAuth
 // @Param body body request.GenerateIAImage true "Generate IA Image"
-// @Success 200 {object} response.GenerateIAImage "Success"
+// @Success 200 {object} response.UploadImage "Success"
 // @Failure 400
 // @Failure 409
 // @Failure 422

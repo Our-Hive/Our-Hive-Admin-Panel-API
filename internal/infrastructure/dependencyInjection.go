@@ -52,12 +52,24 @@ func InitializeImageUseCase() *usecase.ImageUseCase {
 	return usecase.NewImageUseCase(imagePersistenceAdapter)
 }
 
+func InitializeUploadUseCase() *usecase.UploadUseCase {
+	imageUseCase := InitializeImageUseCase()
+	imageDataUseCase := InitializeImageDataUseCase()
+
+	return usecase.NewUploadUseCase(imageUseCase, imageDataUseCase)
+}
+
+func InitializeImageDataUseCase() *usecase.ImageDataUseCase {
+	imageBucket := bucket.NewImageBucket(bucketHandle, ctx)
+	imageStorageAdapter := storageadapter.NewImageStorageAdapter(imageBucket)
+
+	return usecase.NewImageDataUseCase(imageStorageAdapter)
+}
+
 func InitializeGenerationController() *controller.GenerationController {
 	imageUseCase := InitializeImageUseCase()
 
-	imageBucket := bucket.NewImageBucket(bucketHandle, ctx)
-	imageStorageAdapter := storageadapter.NewImageStorageAdapter(imageBucket)
-	imageDataUseCase := usecase.NewImageDataUseCase(imageStorageAdapter)
+	imageDataUseCase := InitializeImageDataUseCase()
 
 	huggingFaceClassificationAdapter := externaladapter.NewHuggingFaceClassificationAdapter()
 	stableDiffusionAdapter := externaladapter.NewStableDiffusionAdapter()
@@ -71,6 +83,8 @@ func InitializeGenerationController() *controller.GenerationController {
 func InitializeImageController() *controller.ImageController {
 	imageUseCase := InitializeImageUseCase()
 	imageHandler := handler.NewImageHandler(imageUseCase)
+	uploadUseCase := InitializeUploadUseCase()
+	uploadHandler := handler.NewUploadHandler(uploadUseCase)
 
-	return controller.NewImageController(imageHandler)
+	return controller.NewImageController(imageHandler, uploadHandler)
 }

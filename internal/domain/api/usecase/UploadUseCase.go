@@ -12,7 +12,11 @@ type UploadUseCase struct {
 	imageDataServicePort api.IImageDataServicePort
 }
 
-func (u UploadUseCase) UploadFile(imageData *model.ImageData) (imageUrl string, err error) {
+func NewUploadUseCase(imageServicePort api.IImageServicePort, imageDataServicePort api.IImageDataServicePort) *UploadUseCase {
+	return &UploadUseCase{imageServicePort: imageServicePort, imageDataServicePort: imageDataServicePort}
+}
+
+func (u UploadUseCase) UploadFile(imageData *model.ImageData, contentType string) (imageUrl string, err error) {
 	imageUrl, savedImageData, err := u.imageDataServicePort.SaveImageData(imageData)
 
 	if err != nil {
@@ -24,7 +28,7 @@ func (u UploadUseCase) UploadFile(imageData *model.ImageData) (imageUrl string, 
 		savedImageData.FileName,
 		imageUrl,
 		int64(len(savedImageData.Data)),
-		"",
+		contentType,
 		time.Now(),
 		time.Now(),
 	)

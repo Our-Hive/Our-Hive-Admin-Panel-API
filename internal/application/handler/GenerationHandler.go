@@ -19,7 +19,7 @@ func NewGenerationHandler(generationUseCase api.IGenerationServicePort) *Generat
 	return &GenerationHandler{generationUseCase: generationUseCase}
 }
 
-func (g GenerationHandler) GenerateIAImage(request *request.GenerateIAImage) (resp *response.GenerateIAImage, httpStatus int, err error) {
+func (g GenerationHandler) GenerateIAImage(request *request.GenerateIAImage) (resp *response.UploadImage, httpStatus int, err error) {
 	validate := validator.New()
 
 	err = validate.Struct(request)
@@ -45,7 +45,7 @@ func (g GenerationHandler) GenerateIAImage(request *request.GenerateIAImage) (re
 		return nil, http.StatusInternalServerError, err
 	}
 
-	responseBody := &response.GenerateIAImage{Url: url}
+	responseBody := &response.UploadImage{Url: url}
 
 	return responseBody, http.StatusCreated, nil
 }
