@@ -85,6 +85,8 @@ paths:
             type: array
         "404":
           description: Not Found
+      security:
+      - ApiKeyAuth: []
       summary: Get all images
       tags:
       - images
@@ -93,7 +95,7 @@ paths:
       - multipart/form-data
       description: Upload an image
       parameters:
-      - description: Image
+      - description: File
         in: formData
         name: image
         required: true
@@ -107,6 +109,8 @@ paths:
             $ref: '#/definitions/response.UploadImage'
         "400":
           description: Bad Request
+      security:
+      - ApiKeyAuth: []
       summary: Upload an image
       tags:
       - images

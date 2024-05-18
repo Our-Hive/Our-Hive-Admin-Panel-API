@@ -65,6 +65,11 @@ const docTemplate = `{
         },
         "/images": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Get all images with pagination",
                 "consumes": [
                     "application/json"
@@ -106,6 +111,11 @@ const docTemplate = `{
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Upload an image",
                 "consumes": [
                     "multipart/form-data"
@@ -120,7 +130,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "file",
-                        "description": "Image",
+                        "description": "File",
                         "name": "image",
                         "in": "formData",
                         "required": true

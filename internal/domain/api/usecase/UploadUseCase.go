@@ -29,6 +29,7 @@ func (u UploadUseCase) UploadFile(imageData *model.ImageData, contentType string
 		imageUrl,
 		int64(len(savedImageData.Data)),
 		contentType,
+		false,
 		time.Now(),
 		time.Now(),
 	)

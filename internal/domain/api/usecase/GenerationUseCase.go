@@ -50,6 +50,7 @@ func (g GenerationUseCase) GenerateImage(prompt string, filename string) (imageU
 		imageUrl,
 		int64(len(savedImageData.Data)),
 		"image/jpeg",
+		false,
 		time.Now(),
 		time.Now(),
 	)
