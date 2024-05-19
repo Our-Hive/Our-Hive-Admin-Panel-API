@@ -2,6 +2,7 @@ package controller
 
 import (
 	"github.com/Our-Hive/Our-Hive-Admin-Panel-API/internal/application/handler"
+	"github.com/Our-Hive/Our-Hive-Admin-Panel-API/internal/configuration/security"
 	"github.com/gin-gonic/gin"
 	"mime/multipart"
 	"net/http"
@@ -18,8 +19,9 @@ func NewImageController(imageHandler handler.IImageHandler, uploadHandler handle
 }
 
 func (i ImageController) InitRoutes(router *gin.Engine) {
-	router.GET("/images", i.GetAll)
-	router.POST("/images", i.Upload)
+	router.GET("/images", security.JwtMiddleware, security.AdminRoleMiddleware, i.GetAll)
+	router.POST("/images", security.JwtMiddleware, security.AdminRoleMiddleware, i.Upload)
+	router.PUT("/images/:id", security.JwtMiddleware, security.AdminRoleMiddleware, i.Approve)
 }
 
 // GetAll godoc
@@ -28,6 +30,7 @@ func (i ImageController) InitRoutes(router *gin.Engine) {
 // @Tags images
 // @Accept  json
 // @Produce  json
+// @Security ApiKeyAuth
 // @Param size query int false "Page size"
 // @Param startAfter query string false "Start after"
 // @Success 200 {array} response.Image "Success"
@@ -59,12 +62,13 @@ func (i ImageController) GetAll(c *gin.Context) {
 // @Tags images
 // @Accept  multipart/form-data
 // @Produce  json
-// @Param image formData file true "Image"
+// @Security ApiKeyAuth
+// @Param image formData file true "File"
 // @Success 200 {object} response.UploadImage "Success"
 // @Failure 400
 // @Router /images [post]
 func (i ImageController) Upload(c *gin.Context) {
-	file, err := c.FormFile("image")
+	file, err := c.FormFile("file")
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -97,4 +101,28 @@ func (i ImageController) Upload(c *gin.Context) {
 	}
 
 	c.JSON(httpStatus, resp)
+}
+
+// Approve godoc
+// @Summary Approve an image
+// @Description Approve an image
+// @Tags images
+// @Accept  json
+// @Produce  json
+// @Security ApiKeyAuth
+// @Param id path string true "Image ID"
+// @Success 200
+// @Failure 400
+// @Router /images/{id} [put]
+func (i ImageController) Approve(c *gin.Context) {
+	id := c.Param("id")
+
+	httpStatus, err := i.imageHandler.Approve(id)
+
+	if err != nil {
+		c.JSON(httpStatus, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{})
 }

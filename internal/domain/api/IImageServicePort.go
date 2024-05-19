@@ -6,4 +6,5 @@ type IImageServicePort interface {
 	SaveImage(image *model.Image) error
 	GetImageByName(fileName string) (*model.Image, error)
 	GetAllImages(pageSize int, startAfter string) ([]*model.Image, error)
+	ApproveImage(id string) error
 }

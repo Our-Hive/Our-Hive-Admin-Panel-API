@@ -6,4 +6,5 @@ import (
 
 type IImageHandler interface {
 	GetAll(pageSize int, startAfter string) (images []*response.Image, httpStatus int, err error)
+	Approve(id string) (httpStatus int, err error)
 }

@@ -97,3 +97,20 @@ func (i ImageFirestoreRepository) GetAllImagesFromCollection(pageSize int, start
 
 	return images, nil
 }
+
+func (i ImageFirestoreRepository) GetImageFromCollectionById(id string) (*model.Image, error) {
+	doc, err := i.client.Collection(i.collection).Doc(id).Get(i.ctx)
+
+	if err != nil {
+		return nil, err
+	}
+
+	image := &model.Image{}
+	err = doc.DataTo(image)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return image, nil
+}
