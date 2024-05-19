@@ -60,3 +60,25 @@ func (i ImageUseCase) GetAllImages(pageSize int, startAfter string) ([]*model.Im
 
 	return images, nil
 }
+
+func (i ImageUseCase) ApproveImage(id string) error {
+	image, err := i.imagePersistencePort.GetImageFromDatabaseById(id)
+
+	if err != nil {
+		return err
+	}
+
+	if image == nil {
+		return &domainerror.ImageNotFoundError{FileName: id}
+	}
+
+	image.IsApproved = true
+
+	err = i.imagePersistencePort.SaveImageInDatabase(image)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

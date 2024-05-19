@@ -21,6 +21,7 @@ func NewImageController(imageHandler handler.IImageHandler, uploadHandler handle
 func (i ImageController) InitRoutes(router *gin.Engine) {
 	router.GET("/images", security.JwtMiddleware, security.AdminRoleMiddleware, i.GetAll)
 	router.POST("/images", security.JwtMiddleware, security.AdminRoleMiddleware, i.Upload)
+	router.PUT("/images/:id", security.JwtMiddleware, security.AdminRoleMiddleware, i.Approve)
 }
 
 // GetAll godoc
@@ -100,4 +101,28 @@ func (i ImageController) Upload(c *gin.Context) {
 	}
 
 	c.JSON(httpStatus, resp)
+}
+
+// Approve godoc
+// @Summary Approve an image
+// @Description Approve an image
+// @Tags images
+// @Accept  json
+// @Produce  json
+// @Security ApiKeyAuth
+// @Param id path string true "Image ID"
+// @Success 200
+// @Failure 400
+// @Router /images/{id} [put]
+func (i ImageController) Approve(c *gin.Context) {
+	id := c.Param("id")
+
+	httpStatus, err := i.imageHandler.Approve(id)
+
+	if err != nil {
+		c.JSON(httpStatus, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{})
 }

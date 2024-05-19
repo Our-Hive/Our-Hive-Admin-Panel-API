@@ -114,4 +114,27 @@ paths:
       summary: Upload an image
       tags:
       - images
+  /images/{id}:
+    put:
+      consumes:
+      - application/json
+      description: Approve an image
+      parameters:
+      - description: Image ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+      security:
+      - ApiKeyAuth: []
+      summary: Approve an image
+      tags:
+      - images
 swagger: "2.0"

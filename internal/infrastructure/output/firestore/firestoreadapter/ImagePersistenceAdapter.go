@@ -43,3 +43,13 @@ func (i ImagePersistenceAdapter) GetAllImagesFromDatabase(pageSize int, startAft
 
 	return images, nil
 }
+
+func (i ImagePersistenceAdapter) GetImageFromDatabaseById(id string) (*model.Image, error) {
+	image, err := i.imageRepository.GetImageFromCollectionById(id)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return image, nil
+}
