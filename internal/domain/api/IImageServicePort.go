@@ -7,4 +7,5 @@ type IImageServicePort interface {
 	GetImageByName(fileName string) (*model.Image, error)
 	GetAllImages(pageSize int, startAfter string) ([]*model.Image, error)
 	ApproveImage(id string) error
+	GetImagesByApprovedStatus(approved bool) ([]*model.Image, error)
 }

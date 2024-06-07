@@ -20,6 +20,7 @@ func NewImageController(imageHandler handler.IImageHandler, uploadHandler handle
 
 func (i ImageController) InitRoutes(router *gin.Engine) {
 	router.GET("/images", security.JwtMiddleware, security.AdminRoleMiddleware, i.GetAll)
+	router.GET("/images/approval", security.JwtMiddleware, security.AdminRoleMiddleware, i.GetByApprovalStatus)
 	router.POST("/images", security.JwtMiddleware, security.AdminRoleMiddleware, i.Upload)
 	router.PUT("/images/:id", security.JwtMiddleware, security.AdminRoleMiddleware, i.Approve)
 }
@@ -54,6 +55,36 @@ func (i ImageController) GetAll(c *gin.Context) {
 	}
 
 	c.JSON(httpStatus, images)
+}
+
+// GetByApprovalStatus godoc
+// @Summary Get all images by approved status
+// @Description Get all images by approved status
+// @Tags images
+// @Accept  json
+// @Produce  json
+// @Security ApiKeyAuth
+// @Param approved query bool false "Approved"
+// @Success 200 {array} response.Image "Success"
+// @Failure 404
+// @Router /images/approval [get]
+func (i ImageController) GetByApprovalStatus(c *gin.Context) {
+	approved, err := strconv.ParseBool(c.DefaultQuery("approved", "false"))
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	images, httpStatus, err := i.imageHandler.GetByApprovedStatus(approved)
+
+	if err != nil {
+		c.JSON(httpStatus, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(httpStatus, images)
+
 }
 
 // Upload godoc

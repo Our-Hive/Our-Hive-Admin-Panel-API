@@ -137,4 +137,30 @@ paths:
       summary: Approve an image
       tags:
       - images
+  /images/approval:
+    get:
+      consumes:
+      - application/json
+      description: Get all images by approved status
+      parameters:
+      - description: Approved
+        in: query
+        name: approved
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            items:
+              $ref: '#/definitions/response.Image'
+            type: array
+        "404":
+          description: Not Found
+      security:
+      - ApiKeyAuth: []
+      summary: Get all images by approved status
+      tags:
+      - images
 swagger: "2.0"

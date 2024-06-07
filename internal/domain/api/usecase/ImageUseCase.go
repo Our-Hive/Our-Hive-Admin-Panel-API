@@ -82,3 +82,17 @@ func (i ImageUseCase) ApproveImage(id string) error {
 
 	return nil
 }
+
+func (i ImageUseCase) GetImagesByApprovedStatus(approved bool) ([]*model.Image, error) {
+	images, err := i.imagePersistencePort.GetImagesByApprovedStatus(approved)
+
+	if err != nil {
+		return nil, err
+	}
+
+	if len(images) == 0 {
+		return nil, &domainerror.NoDataFound{Message: fmt.Sprintf(domainconstant.NoDataFoundErrorMessage, "images")}
+	}
+
+	return images, nil
+}

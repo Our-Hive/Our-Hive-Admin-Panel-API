@@ -49,3 +49,20 @@ func (i ImageHandler) Approve(id string) (httpStatus int, err error) {
 
 	return http.StatusNoContent, nil
 }
+
+func (i ImageHandler) GetByApprovedStatus(approved bool) (images []*response.Image, httpStatus int, err error) {
+	retrievedImages, err := i.imageServicePort.GetImagesByApprovedStatus(approved)
+
+	var noDataFoundError *domainerror.NoDataFound
+	if errors.As(err, &noDataFoundError) {
+		return nil, http.StatusNotFound, noDataFoundError
+	}
+
+	if err != nil {
+		return nil, http.StatusInternalServerError, err
+	}
+
+	images = mapper.FromImagesToImageResponses(retrievedImages)
+
+	return images, http.StatusOK, nil
+}

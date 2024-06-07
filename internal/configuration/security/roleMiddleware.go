@@ -19,7 +19,7 @@ func AdminRoleMiddleware(c *gin.Context) {
 
 	if user.(model.Token).Role != "admin" {
 		c.AbortWithStatusJSON(http.StatusForbidden, gin.H{
-			"message": "Forbidden",
+			"message": "Forbidden, you are not an admin",
 		})
 		return
 	}

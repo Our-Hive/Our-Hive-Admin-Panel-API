@@ -114,3 +114,31 @@ func (i ImageFirestoreRepository) GetImageFromCollectionById(id string) (*model.
 
 	return image, nil
 }
+
+func (i ImageFirestoreRepository) GetImagesByApprovedStatus(approved bool) ([]*model.Image, error) {
+	var images []*model.Image
+	iter := i.client.Collection(i.collection).Where("IsApproved", "==", approved).Documents(i.ctx)
+
+	for {
+		doc, err := iter.Next()
+
+		if errors.Is(err, iterator.Done) {
+			break
+		}
+
+		if err != nil {
+			return nil, err
+		}
+
+		image := &model.Image{}
+		err = doc.DataTo(image)
+
+		if err != nil {
+			return nil, err
+		}
+
+		images = append(images, image)
+	}
+
+	return images, nil
+}
