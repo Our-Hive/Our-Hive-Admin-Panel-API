@@ -22,7 +22,7 @@ func JwtMiddleware(c *gin.Context) {
 	// check if token is expired
 	if float64(time.Now().Unix()) > claims["exp"].(float64) {
 		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-			"message": "Unauthorized",
+			"message": "Unauthorized, token expired",
 		})
 		return
 	}

@@ -53,3 +53,13 @@ func (i ImagePersistenceAdapter) GetImageFromDatabaseById(id string) (*model.Ima
 
 	return image, nil
 }
+
+func (i ImagePersistenceAdapter) GetImagesByApprovedStatus(approved bool) ([]*model.Image, error) {
+	images, err := i.imageRepository.GetImagesByApprovedStatus(approved)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return images, nil
+}
