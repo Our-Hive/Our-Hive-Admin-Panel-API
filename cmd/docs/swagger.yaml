@@ -1,4 +1,16 @@
 definitions:
+  request.CreateContactLine:
+    properties:
+      description:
+        minLength: 1
+        type: string
+      name:
+        minLength: 1
+        type: string
+    required:
+    - description
+    - name
+    type: object
   request.GenerateIAImage:
     properties:
       file_name:
@@ -30,6 +42,30 @@ definitions:
 info:
   contact: {}
 paths:
+  /contact-line:
+    post:
+      consumes:
+      - application/json
+      description: Create a contact line
+      parameters:
+      - description: Contact Line
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/request.CreateContactLine'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: Create a contact line
+      tags:
+      - Contact Line
   /generation:
     post:
       consumes:
