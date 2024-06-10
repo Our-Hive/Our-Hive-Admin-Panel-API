@@ -3,6 +3,7 @@ package controller
 import (
 	"github.com/Our-Hive/Our-Hive-Admin-Panel-API/internal/application/dto/request"
 	"github.com/Our-Hive/Our-Hive-Admin-Panel-API/internal/application/handler"
+	"github.com/Our-Hive/Our-Hive-Admin-Panel-API/internal/configuration/security"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
@@ -17,10 +18,8 @@ func NewContactLineController(contactLineHandler handler.IContactLineHandler) *C
 }
 
 func (controller ContactLineController) InitRoutes(router *gin.Engine) {
-	//router.POST("/contact-line", security.JwtMiddleware, security.AdminRoleMiddleware, controller.CreateContactLine)
-	router.POST("/contact-line", controller.CreateContactLine)
-	//router.GET("/contact-line", security.JwtMiddleware, security.AdminRoleMiddleware, controller.GetAll)
-	router.GET("/contact-line", controller.GetAll)
+	router.POST("/contact-line", security.JwtMiddleware, security.AdminRoleMiddleware, controller.CreateContactLine)
+	router.GET("/contact-line", security.JwtMiddleware, security.AdminRoleMiddleware, controller.GetAll)
 }
 
 // CreateContactLine godoc
@@ -30,6 +29,7 @@ func (controller ContactLineController) InitRoutes(router *gin.Engine) {
 // @Accept json
 // @Produce json
 // @Param body body request.CreateContactLine true "Contact Line"
+// @Security ApiKeyAuth
 // @Success 201
 // @Failure 400 {object} string
 // @Router /contact-line [post]
