@@ -4,6 +4,7 @@ import (
 	"cloud.google.com/go/firestore"
 	"context"
 	"github.com/Our-Hive/Our-Hive-Admin-Panel-API/internal/domain/model"
+	"github.com/Our-Hive/Our-Hive-Admin-Panel-API/internal/infrastructure/output/firestore/firestoreconstant"
 )
 
 type ContactLineRepository struct {
@@ -12,8 +13,8 @@ type ContactLineRepository struct {
 	collection string
 }
 
-func NewContactLineRepository(client *firestore.Client, ctx context.Context, collection string) *ContactLineRepository {
-	return &ContactLineRepository{client: client, ctx: ctx, collection: collection}
+func NewContactLineRepository(client *firestore.Client, ctx context.Context) *ContactLineRepository {
+	return &ContactLineRepository{client: client, ctx: ctx, collection: firestoreconstant.ContactLineDocumentName}
 }
 
 func (c ContactLineRepository) SaveContactLineInCollection(contactLine *model.ContactLine) error {

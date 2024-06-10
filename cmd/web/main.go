@@ -21,6 +21,9 @@ func main() {
 	imageController := infrastructure.InitializeImageController()
 	imageController.InitRoutes(router)
 
+	contactLineController := infrastructure.InitializeContactLineController()
+	contactLineController.InitRoutes(router)
+
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 
 	err := router.Run()

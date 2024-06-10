@@ -15,6 +15,43 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/contact-line": {
+            "post": {
+                "description": "Create a contact line",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Contact Line"
+                ],
+                "summary": "Create a contact line",
+                "parameters": [
+                    {
+                        "description": "Contact Line",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.CreateContactLine"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/generation": {
             "post": {
                 "security": [
@@ -230,6 +267,23 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "request.CreateContactLine": {
+            "type": "object",
+            "required": [
+                "description",
+                "name"
+            ],
+            "properties": {
+                "description": {
+                    "type": "string",
+                    "minLength": 1
+                },
+                "name": {
+                    "type": "string",
+                    "minLength": 1
+                }
+            }
+        },
         "request.GenerateIAImage": {
             "type": "object",
             "required": [

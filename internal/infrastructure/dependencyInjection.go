@@ -88,3 +88,12 @@ func InitializeImageController() *controller.ImageController {
 
 	return controller.NewImageController(imageHandler, uploadHandler)
 }
+
+func InitializeContactLineController() *controller.ContactLineController {
+	contactLineRepository := repository.NewContactLineRepository(firestoreClient, ctx)
+	contactLinePersistenceAdapter := firestoreadapter.NewContactLinePersistenceAdapter(contactLineRepository)
+	contactLineUseCase := usecase.NewContactLineUseCase(contactLinePersistenceAdapter)
+	contactLineHandler := handler.NewContactLineHandler(contactLineUseCase)
+
+	return controller.NewContactLineController(contactLineHandler)
+}
