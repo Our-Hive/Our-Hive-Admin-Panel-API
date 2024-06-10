@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"github.com/Our-Hive/Our-Hive-Admin-Panel-API/internal/domain/domainerror"
 	"github.com/Our-Hive/Our-Hive-Admin-Panel-API/internal/domain/model"
 	"github.com/Our-Hive/Our-Hive-Admin-Panel-API/internal/domain/spi"
 )
@@ -15,6 +16,12 @@ func NewContactLineUseCase(contactLinePersistencePort spi.IContactLinePersistenc
 }
 
 func (c ContactLineUseCase) CreateContactLine(line *model.ContactLine) (err error) {
+	foundLine, _ := c.GetContactLineByName(line.Name)
+
+	if foundLine != nil {
+		return &domainerror.ContactLineAlreadyExistsError{Name: line.Name}
+	}
+
 	err = c.contactLinePersistencePort.SaveContactLineInDatabase(line)
 
 	if err != nil {
@@ -22,4 +29,18 @@ func (c ContactLineUseCase) CreateContactLine(line *model.ContactLine) (err erro
 	}
 
 	return nil
+}
+
+func (c ContactLineUseCase) GetContactLineByName(name string) (*model.ContactLine, error) {
+	line, err := c.contactLinePersistencePort.GetContactLineFromDatabaseByName(name)
+
+	if err != nil {
+		return nil, err
+	}
+
+	if line == nil {
+		return nil, &domainerror.ContactLineNotFoundError{Name: name}
+	}
+
+	return line, nil
 }

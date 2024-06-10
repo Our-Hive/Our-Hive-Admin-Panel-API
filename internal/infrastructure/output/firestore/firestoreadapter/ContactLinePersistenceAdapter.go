@@ -23,3 +23,13 @@ func (c ContactLinePersistenceAdapter) SaveContactLineInDatabase(line *model.Con
 
 	return nil
 }
+
+func (c ContactLinePersistenceAdapter) GetContactLineFromDatabaseByName(name string) (*model.ContactLine, error) {
+	line, err := c.contactLineRepository.GetContactLineFromCollectionByName(name)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return line, nil
+}
