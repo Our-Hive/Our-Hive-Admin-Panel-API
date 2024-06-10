@@ -1,6 +1,8 @@
 package usecase
 
 import (
+	"fmt"
+	"github.com/Our-Hive/Our-Hive-Admin-Panel-API/internal/domain/domainconstant"
 	"github.com/Our-Hive/Our-Hive-Admin-Panel-API/internal/domain/domainerror"
 	"github.com/Our-Hive/Our-Hive-Admin-Panel-API/internal/domain/model"
 	"github.com/Our-Hive/Our-Hive-Admin-Panel-API/internal/domain/spi"
@@ -43,4 +45,18 @@ func (c ContactLineUseCase) GetContactLineByName(name string) (*model.ContactLin
 	}
 
 	return line, nil
+}
+
+func (c ContactLineUseCase) GetAllContactLines(pageSize int, startAfter string) ([]*model.ContactLine, error) {
+	lines, err := c.contactLinePersistencePort.GetAllContactLinesFromDatabase(pageSize, startAfter)
+
+	if err != nil {
+		return nil, err
+	}
+
+	if len(lines) == 0 {
+		return nil, &domainerror.NoDataFound{Message: fmt.Sprintf(domainconstant.NoDataFoundErrorMessage, "contact lines")}
+	}
+
+	return lines, nil
 }

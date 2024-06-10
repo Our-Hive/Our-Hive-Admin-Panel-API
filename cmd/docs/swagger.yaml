@@ -1,4 +1,11 @@
 definitions:
+  model.ContactLine:
+    properties:
+      description:
+        type: string
+      name:
+        type: string
+    type: object
   request.CreateContactLine:
     properties:
       description:
@@ -43,6 +50,35 @@ info:
   contact: {}
 paths:
   /contact-line:
+    get:
+      consumes:
+      - application/json
+      description: Get all contact lines with pagination
+      parameters:
+      - description: Page size
+        in: query
+        name: size
+        type: integer
+      - description: Start after
+        in: query
+        name: startAfter
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            items:
+              $ref: '#/definitions/model.ContactLine'
+            type: array
+        "404":
+          description: Not Found
+      security:
+      - ApiKeyAuth: []
+      summary: Get all contact lines
+      tags:
+      - Contact Line
     post:
       consumes:
       - application/json
