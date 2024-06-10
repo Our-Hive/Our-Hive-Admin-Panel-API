@@ -29,7 +29,10 @@ func (c ContactLineHandler) Create(request *request.CreateContactLine) (httpStat
 		return http.StatusBadRequest, validationErrors
 	}
 
-	contactLine := model.NewContactLine(request.Name, request.Description)
+	contactLine := &model.ContactLine{
+		Name:        request.Name,
+		Description: request.Description,
+	}
 	err = c.contactLineServicePort.CreateContactLine(contactLine)
 
 	var contactLineAlreadyExistsError *domainerror.ContactLineAlreadyExistsError
@@ -42,4 +45,19 @@ func (c ContactLineHandler) Create(request *request.CreateContactLine) (httpStat
 	}
 
 	return http.StatusCreated, nil
+}
+
+func (c ContactLineHandler) GetAll(pageSize int, startAfter string) (contactLines []*model.ContactLine, httpStatus int, err error) {
+	contactLines, err = c.contactLineServicePort.GetAllContactLines(pageSize, startAfter)
+
+	var noDataFoundError *domainerror.NoDataFound
+	if errors.As(err, &noDataFoundError) {
+		return nil, http.StatusNotFound, noDataFoundError
+	}
+
+	if err != nil {
+		return nil, http.StatusInternalServerError, err
+	}
+
+	return contactLines, http.StatusOK, nil
 }

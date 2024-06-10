@@ -3,8 +3,10 @@ package controller
 import (
 	"github.com/Our-Hive/Our-Hive-Admin-Panel-API/internal/application/dto/request"
 	"github.com/Our-Hive/Our-Hive-Admin-Panel-API/internal/application/handler"
+	"github.com/Our-Hive/Our-Hive-Admin-Panel-API/internal/configuration/security"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"strconv"
 )
 
 type ContactLineController struct {
@@ -16,7 +18,8 @@ func NewContactLineController(contactLineHandler handler.IContactLineHandler) *C
 }
 
 func (controller ContactLineController) InitRoutes(router *gin.Engine) {
-	router.POST("/contact-line", controller.CreateContactLine)
+	router.POST("/contact-line", security.JwtMiddleware, security.AdminRoleMiddleware, controller.CreateContactLine)
+	router.GET("/contact-line", security.JwtMiddleware, security.AdminRoleMiddleware, controller.GetAll)
 }
 
 // CreateContactLine godoc
@@ -26,6 +29,7 @@ func (controller ContactLineController) InitRoutes(router *gin.Engine) {
 // @Accept json
 // @Produce json
 // @Param body body request.CreateContactLine true "Contact Line"
+// @Security ApiKeyAuth
 // @Success 201
 // @Failure 400 {object} string
 // @Router /contact-line [post]
@@ -44,5 +48,37 @@ func (controller ContactLineController) CreateContactLine(c *gin.Context) {
 		return
 	}
 
-	c.JSON(httpStatus, nil)
+	c.Status(httpStatus)
+}
+
+// GetAll godoc
+// @Summary Get all contact lines
+// @Description Get all contact lines with pagination
+// @Tags Contact Line
+// @Accept  json
+// @Produce  json
+// @Security ApiKeyAuth
+// @Param size query int false "Page size"
+// @Param startAfter query string false "Start after"
+// @Success 200 {array} model.ContactLine "Success"
+// @Failure 404
+// @Router /contact-line [get]
+func (controller ContactLineController) GetAll(c *gin.Context) {
+	pageSize, err := strconv.Atoi(c.DefaultQuery("size", "10"))
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	startAfter := c.DefaultQuery("startAfter", "")
+
+	contactLines, httpStatus, err := controller.contactLineHandler.GetAll(pageSize, startAfter)
+
+	if err != nil {
+		c.JSON(httpStatus, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(httpStatus, contactLines)
 }

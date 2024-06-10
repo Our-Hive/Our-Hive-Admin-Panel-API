@@ -16,6 +16,52 @@ const docTemplate = `{
     "basePath": "{{.BasePath}}",
     "paths": {
         "/contact-line": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Get all contact lines with pagination",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Contact Line"
+                ],
+                "summary": "Get all contact lines",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Page size",
+                        "name": "size",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Start after",
+                        "name": "startAfter",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.ContactLine"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                }
+            },
             "post": {
                 "description": "Create a contact line",
                 "consumes": [
@@ -267,6 +313,17 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "model.ContactLine": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
         "request.CreateContactLine": {
             "type": "object",
             "required": [
