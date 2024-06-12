@@ -11,6 +11,10 @@ type DigitalContentUseCase struct {
 	digitalContentPersistencePort spi.IDigitalContentPersistencePort
 }
 
+func NewDigitalContentUseCase(digitalContentPersistencePort spi.IDigitalContentPersistencePort) *DigitalContentUseCase {
+	return &DigitalContentUseCase{digitalContentPersistencePort: digitalContentPersistencePort}
+}
+
 func (d DigitalContentUseCase) CreateDigitalContent(content *model.DigitalContent) (err error) {
 	foundContent, _ := d.digitalContentPersistencePort.GetDigitalContentFromDatabaseByTitle(content.Title)
 

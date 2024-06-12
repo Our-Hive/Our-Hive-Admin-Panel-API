@@ -1,7 +1,7 @@
 package controller
 
 import (
-	"github.com/Our-Hive/Our-Hive-Admin-Panel-API/internal/application/handler"
+	"github.com/Our-Hive/Our-Hive-Admin-Panel-API/internal/application"
 	"github.com/Our-Hive/Our-Hive-Admin-Panel-API/internal/configuration/security"
 	"github.com/gin-gonic/gin"
 	"mime/multipart"
@@ -10,11 +10,11 @@ import (
 )
 
 type ImageController struct {
-	imageHandler  handler.IImageHandler
-	uploadHandler handler.IUploadHandler
+	imageHandler  application.IImageHandler
+	uploadHandler application.IUploadHandler
 }
 
-func NewImageController(imageHandler handler.IImageHandler, uploadHandler handler.IUploadHandler) *ImageController {
+func NewImageController(imageHandler application.IImageHandler, uploadHandler application.IUploadHandler) *ImageController {
 	return &ImageController{imageHandler: imageHandler, uploadHandler: uploadHandler}
 }
 
