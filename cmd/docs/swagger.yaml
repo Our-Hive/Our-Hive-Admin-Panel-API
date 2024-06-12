@@ -3,6 +3,8 @@ definitions:
     properties:
       description:
         type: string
+      id:
+        type: string
       name:
         type: string
     type: object
@@ -17,6 +19,22 @@ definitions:
     required:
     - description
     - name
+    type: object
+  request.CreateDigitalContent:
+    properties:
+      description:
+        minLength: 1
+        type: string
+      title:
+        minLength: 1
+        type: string
+      url:
+        minLength: 1
+        type: string
+    required:
+    - description
+    - title
+    - url
     type: object
   request.GenerateIAImage:
     properties:
@@ -99,6 +117,8 @@ paths:
           description: Bad Request
           schema:
             type: string
+      security:
+      - ApiKeyAuth: []
       summary: Create a contact line
       tags:
       - Contact Line
@@ -235,4 +255,30 @@ paths:
       summary: Get all images by approved status
       tags:
       - images
+  /recommended-content:
+    post:
+      consumes:
+      - application/json
+      description: Create a new recommended content
+      parameters:
+      - description: Recommended Content
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/request.CreateDigitalContent'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Create a new recommended content
+      tags:
+      - Recommended Content
 swagger: "2.0"

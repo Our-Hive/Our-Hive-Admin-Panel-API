@@ -24,6 +24,9 @@ func main() {
 	contactLineController := infrastructure.InitializeContactLineController()
 	contactLineController.InitRoutes(router)
 
+	recommendedContentController := infrastructure.InitializeRecommendedContentController()
+	recommendedContentController.InitRoutes(router)
+
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 
 	err := router.Run()

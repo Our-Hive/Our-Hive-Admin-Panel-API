@@ -63,6 +63,11 @@ const docTemplate = `{
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Create a contact line",
                 "consumes": [
                     "application/json"
@@ -310,6 +315,48 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/recommended-content": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Create a new recommended content",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Recommended Content"
+                ],
+                "summary": "Create a new recommended content",
+                "parameters": [
+                    {
+                        "description": "Recommended Content",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.CreateDigitalContent"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -317,6 +364,9 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "description": {
+                    "type": "string"
+                },
+                "id": {
                     "type": "string"
                 },
                 "name": {
@@ -336,6 +386,28 @@ const docTemplate = `{
                     "minLength": 1
                 },
                 "name": {
+                    "type": "string",
+                    "minLength": 1
+                }
+            }
+        },
+        "request.CreateDigitalContent": {
+            "type": "object",
+            "required": [
+                "description",
+                "title",
+                "url"
+            ],
+            "properties": {
+                "description": {
+                    "type": "string",
+                    "minLength": 1
+                },
+                "title": {
+                    "type": "string",
+                    "minLength": 1
+                },
+                "url": {
                     "type": "string",
                     "minLength": 1
                 }

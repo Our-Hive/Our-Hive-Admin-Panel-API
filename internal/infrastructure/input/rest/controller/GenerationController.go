@@ -1,22 +1,22 @@
 package controller
 
 import (
+	"github.com/Our-Hive/Our-Hive-Admin-Panel-API/internal/application"
 	"github.com/Our-Hive/Our-Hive-Admin-Panel-API/internal/application/dto/request"
-	"github.com/Our-Hive/Our-Hive-Admin-Panel-API/internal/application/handler"
 	"github.com/Our-Hive/Our-Hive-Admin-Panel-API/internal/configuration/security"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
 
 type GenerationController struct {
-	generationHandler handler.IGenerationHandler
+	generationHandler application.IGenerationHandler
 }
 
 func (g GenerationController) InitRoutes(router *gin.Engine) {
 	router.POST("/generation", security.JwtMiddleware, security.AdminRoleMiddleware, g.GenerateIAImage)
 }
 
-func NewGenerationController(generationHandler handler.IGenerationHandler) *GenerationController {
+func NewGenerationController(generationHandler application.IGenerationHandler) *GenerationController {
 	return &GenerationController{generationHandler: generationHandler}
 }
 

@@ -1,8 +1,8 @@
 package controller
 
 import (
+	"github.com/Our-Hive/Our-Hive-Admin-Panel-API/internal/application"
 	"github.com/Our-Hive/Our-Hive-Admin-Panel-API/internal/application/dto/request"
-	"github.com/Our-Hive/Our-Hive-Admin-Panel-API/internal/application/handler"
 	"github.com/Our-Hive/Our-Hive-Admin-Panel-API/internal/configuration/security"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -10,10 +10,10 @@ import (
 )
 
 type ContactLineController struct {
-	contactLineHandler handler.IContactLineHandler
+	contactLineHandler application.IContactLineHandler
 }
 
-func NewContactLineController(contactLineHandler handler.IContactLineHandler) *ContactLineController {
+func NewContactLineController(contactLineHandler application.IContactLineHandler) *ContactLineController {
 	return &ContactLineController{contactLineHandler: contactLineHandler}
 }
 
