@@ -17,7 +17,7 @@ func NewRecommendedContentController(recommendedContentHandler application.IReco
 }
 
 func (r RecommendedContentController) InitRoutes(router *gin.Engine) {
-	router.POST("/recommended-content", security.JwtMiddleware, security.AdminRoleMiddleware, controller.CreateRecommendedContent)
+	router.POST("/recommended-content", security.JwtMiddleware, security.AdminRoleMiddleware, r.CreateRecommendedContent)
 }
 
 // CreateRecommendedContent godoc
