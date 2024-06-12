@@ -8,6 +8,17 @@ definitions:
       name:
         type: string
     type: object
+  model.DigitalContent:
+    properties:
+      description:
+        type: string
+      id:
+        type: string
+      title:
+        type: string
+      url:
+        type: string
+    type: object
   request.CreateContactLine:
     properties:
       description:
@@ -256,6 +267,28 @@ paths:
       tags:
       - images
   /recommended-content:
+    get:
+      consumes:
+      - application/json
+      description: Get all recommended content
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.DigitalContent'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Get all recommended content
+      tags:
+      - Recommended Content
     post:
       consumes:
       - application/json

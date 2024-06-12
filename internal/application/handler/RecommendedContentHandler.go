@@ -37,3 +37,12 @@ func (r RecommendedContentHandler) Create(request *request.CreateDigitalContent)
 
 	return http.StatusCreated, nil
 }
+
+func (r RecommendedContentHandler) GetAll(pageSize int, startAfter string) (contents []*model.DigitalContent, httpStatus int, err error) {
+	contents, err = r.digitalContentServicePort.GetAllDigitalContent(pageSize, startAfter)
+	if err != nil {
+		return nil, http.StatusInternalServerError, err
+	}
+
+	return contents, http.StatusOK, nil
+}
