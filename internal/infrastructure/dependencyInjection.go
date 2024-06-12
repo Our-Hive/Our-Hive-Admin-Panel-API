@@ -97,3 +97,12 @@ func InitializeContactLineController() *controller.ContactLineController {
 
 	return controller.NewContactLineController(contactLineHandler)
 }
+
+func InitializeRecommendedContentController() *controller.RecommendedContentController {
+	recommendedContentRepository := repository.NewRecommendedContentRepository(firestoreClient, ctx)
+	recommendedContentPersistenceAdapter := firestoreadapter.NewDigitalContentPersistenceAdapter(recommendedContentRepository)
+	recommendedContentUseCase := usecase.NewDigitalContentUseCase(recommendedContentPersistenceAdapter)
+	recommendedContentHandler := handler.NewRecommendedContentHandler(recommendedContentUseCase)
+
+	return controller.NewRecommendedContentController(recommendedContentHandler)
+}

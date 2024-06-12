@@ -3,6 +3,7 @@ package controller
 import (
 	"github.com/Our-Hive/Our-Hive-Admin-Panel-API/internal/application"
 	"github.com/Our-Hive/Our-Hive-Admin-Panel-API/internal/application/dto/request"
+	"github.com/Our-Hive/Our-Hive-Admin-Panel-API/internal/configuration/security"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -16,8 +17,7 @@ func NewRecommendedContentController(recommendedContentHandler application.IReco
 }
 
 func (r RecommendedContentController) InitRoutes(router *gin.Engine) {
-	// router.POST("/recommended-content", security.JwtMiddleware, security.AdminRoleMiddleware, controller.CreateRecommendedContent)
-	router.POST("/recommended-content", r.CreateRecommendedContent)
+	router.POST("/recommended-content", security.JwtMiddleware, security.AdminRoleMiddleware, controller.CreateRecommendedContent)
 }
 
 // CreateRecommendedContent godoc
