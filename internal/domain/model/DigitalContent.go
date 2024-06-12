@@ -1,7 +1,7 @@
 package model
 
 type DigitalContent struct {
-	ID          int
+	ID          string
 	Title       string
 	Description string
 	URL         string
