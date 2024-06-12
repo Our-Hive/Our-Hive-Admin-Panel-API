@@ -28,3 +28,23 @@ func (r RecommendedContentRepository) SaveRecommendedContentInCollection(recomme
 
 	return nil
 }
+
+func (r RecommendedContentRepository) GetRecommendedContentFromCollectionByTitle(title string) (*model.DigitalContent, error) {
+	iter := r.client.Collection(r.collection).Where("Title", "==", title).Documents(r.ctx)
+
+	doc, err := iter.Next()
+
+	if err != nil {
+		return nil, err
+	}
+
+	var content model.DigitalContent
+
+	err = doc.DataTo(&content)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &content, nil
+}
