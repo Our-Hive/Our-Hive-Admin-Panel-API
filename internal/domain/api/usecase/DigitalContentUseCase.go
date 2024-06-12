@@ -30,3 +30,13 @@ func (d DigitalContentUseCase) CreateDigitalContent(content *model.DigitalConten
 
 	return nil
 }
+
+func (d DigitalContentUseCase) GetAllDigitalContent(pageSize int, startAfter string) (contents []*model.DigitalContent, err error) {
+	contents, err = d.digitalContentPersistencePort.GetAllDigitalContentFromDatabase(pageSize, startAfter)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return contents, nil
+}
