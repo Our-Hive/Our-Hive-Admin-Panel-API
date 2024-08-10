@@ -22,7 +22,7 @@ var bucketHandle *storage.BucketHandle
 var firestoreClient *firestore.Client
 
 func InitializeFirebase() {
-	sa := option.WithCredentialsFile("/home/nico/Documents/our-hive/Our-Hive-Admin-Panel-API/internal/infrastructure/adminsdk.json")
+	sa := option.WithCredentialsFile(configuration.FB_ADMIN_SDK_PATH)
 	app, err := firebase.NewApp(ctx, nil, sa)
 
 	if err != nil {
