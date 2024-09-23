@@ -48,3 +48,28 @@ func (r RecommendedContentRepository) GetRecommendedContentFromCollectionByTitle
 
 	return &content, nil
 }
+
+func (r RecommendedContentRepository) GetAllRecommendedContentFromCollection() ([]*model.DigitalContent, error) {
+	iter := r.client.Collection(r.collection).Documents(r.ctx)
+	var content []*model.DigitalContent
+
+	for {
+		doc, err := iter.Next()
+
+		if err != nil {
+			break
+		}
+
+		var digitalContent model.DigitalContent
+
+		err = doc.DataTo(&digitalContent)
+
+		if err != nil {
+			return nil, err
+		}
+
+		content = append(content, &digitalContent)
+	}
+
+	return content, nil
+}

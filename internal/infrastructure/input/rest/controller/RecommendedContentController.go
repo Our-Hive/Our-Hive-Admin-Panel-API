@@ -18,6 +18,7 @@ func NewRecommendedContentController(recommendedContentHandler application.IReco
 
 func (r RecommendedContentController) InitRoutes(router *gin.Engine) {
 	router.POST("/recommended-content", security.JwtMiddleware, security.AdminRoleMiddleware, r.CreateRecommendedContent)
+	router.GET("/recommended-content", security.JwtMiddleware, r.GetAllRecommendedContent)
 }
 
 // CreateRecommendedContent godoc
@@ -47,4 +48,25 @@ func (r RecommendedContentController) CreateRecommendedContent(c *gin.Context) {
 	}
 
 	c.Status(httpStatus)
+}
+
+// GetAllRecommendedContent godoc
+// @Summary Get all recommended content
+// @Description Get all recommended content
+// @Tags Recommended Content
+// @Accept json
+// @Produce json
+// @Security ApiKeyAuth
+// @Success 200 {array} model.DigitalContent
+// @Failure 500 {object} string
+// @Router /recommended-content [get]
+func (r RecommendedContentController) GetAllRecommendedContent(c *gin.Context) {
+	content, httpStatus, err := r.recommendedContentHandler.GetAll()
+
+	if err != nil {
+		c.JSON(httpStatus, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(httpStatus, content)
 }

@@ -33,3 +33,13 @@ func (d DigitalContentPersistenceAdapter) GetDigitalContentFromDatabaseByTitle(t
 
 	return content, nil
 }
+
+func (d DigitalContentPersistenceAdapter) GetAllDigitalContentFromDatabase() (content []*model.DigitalContent, err error) {
+	content, err = d.recommendedContentRepository.GetAllRecommendedContentFromCollection()
+
+	if err != nil {
+		return nil, err
+	}
+
+	return content, nil
+}

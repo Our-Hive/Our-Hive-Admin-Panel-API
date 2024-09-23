@@ -20,7 +20,7 @@ func NewImageController(imageHandler application.IImageHandler, uploadHandler ap
 
 func (i ImageController) InitRoutes(router *gin.Engine) {
 	router.GET("/images", security.JwtMiddleware, security.AdminRoleMiddleware, i.GetAll)
-	router.GET("/images/approval", security.JwtMiddleware, security.AdminRoleMiddleware, i.GetByApprovalStatus)
+	router.GET("/images/approval", security.JwtMiddleware, i.GetByApprovalStatus)
 	router.POST("/images", security.JwtMiddleware, security.AdminRoleMiddleware, i.Upload)
 	router.PUT("/images/:id", security.JwtMiddleware, security.AdminRoleMiddleware, i.Approve)
 }
