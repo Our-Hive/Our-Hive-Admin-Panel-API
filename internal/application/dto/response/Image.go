@@ -7,4 +7,5 @@ type Image struct {
 	Name        string    `json:"name"`
 	URL         string    `json:"url"`
 	CreatedTime time.Time `json:"created_time"`
+	IsApproved  bool      `json:"is_approved"`
 }

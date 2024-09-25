@@ -18,8 +18,8 @@ func NewContactLineController(contactLineHandler application.IContactLineHandler
 }
 
 func (controller ContactLineController) InitRoutes(router *gin.Engine) {
-	router.POST("/contact-line", security.JwtMiddleware, security.AdminRoleMiddleware, controller.CreateContactLine)
-	router.GET("/contact-line", security.JwtMiddleware, controller.GetAll)
+	router.POST("/contact-lines", security.JwtMiddleware, security.AdminRoleMiddleware, controller.CreateContactLine)
+	router.GET("/contact-lines", security.JwtMiddleware, controller.GetAll)
 }
 
 // CreateContactLine godoc
