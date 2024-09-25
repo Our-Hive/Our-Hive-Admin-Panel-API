@@ -3,6 +3,8 @@ package handler
 import (
 	"errors"
 	"github.com/Our-Hive/Our-Hive-Admin-Panel-API/internal/application/dto/request"
+	"github.com/Our-Hive/Our-Hive-Admin-Panel-API/internal/application/dto/response"
+	"github.com/Our-Hive/Our-Hive-Admin-Panel-API/internal/application/mapper"
 	"github.com/Our-Hive/Our-Hive-Admin-Panel-API/internal/domain/api"
 	"github.com/Our-Hive/Our-Hive-Admin-Panel-API/internal/domain/model"
 	"github.com/go-playground/validator/v10"
@@ -38,12 +40,12 @@ func (r RecommendedContentHandler) Create(request *request.CreateDigitalContent)
 	return http.StatusCreated, nil
 }
 
-func (r RecommendedContentHandler) GetAll() (content []*model.DigitalContent, httpStatus int, err error) {
-	content, err = r.digitalContentServicePort.GetAllDigitalContent()
+func (r RecommendedContentHandler) GetAll() (content []*response.RecommendedContent, httpStatus int, err error) {
+	digitalContent, err := r.digitalContentServicePort.GetAllDigitalContent()
 
 	if err != nil {
 		return nil, http.StatusInternalServerError, err
 	}
 
-	return content, http.StatusOK, nil
+	return mapper.FromRecommendedContentModelsToResponse(digitalContent), http.StatusOK, nil
 }
