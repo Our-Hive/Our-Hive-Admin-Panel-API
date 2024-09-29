@@ -4,7 +4,7 @@
         "contact": {}
     },
     "paths": {
-        "/contact-line": {
+        "/contact-lines": {
             "get": {
                 "security": [
                     {
@@ -250,6 +250,18 @@
                         "description": "Approved",
                         "name": "approved",
                         "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Page size",
+                        "name": "size",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Start after",
+                        "name": "startAfter",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -474,11 +486,17 @@
         "response.Image": {
             "type": "object",
             "properties": {
+                "content_type": {
+                    "type": "string"
+                },
                 "created_time": {
                     "type": "string"
                 },
                 "id": {
                     "type": "string"
+                },
+                "is_approved": {
+                    "type": "boolean"
                 },
                 "name": {
                     "type": "string"

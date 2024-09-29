@@ -15,7 +15,7 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/contact-line": {
+        "/contact-lines": {
             "get": {
                 "security": [
                     {
@@ -261,6 +261,18 @@ const docTemplate = `{
                         "description": "Approved",
                         "name": "approved",
                         "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Page size",
+                        "name": "size",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Start after",
+                        "name": "startAfter",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -485,11 +497,17 @@ const docTemplate = `{
         "response.Image": {
             "type": "object",
             "properties": {
+                "content_type": {
+                    "type": "string"
+                },
                 "created_time": {
                     "type": "string"
                 },
                 "id": {
                     "type": "string"
+                },
+                "is_approved": {
+                    "type": "boolean"
                 },
                 "name": {
                     "type": "string"

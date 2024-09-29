@@ -32,7 +32,7 @@ func (controller ContactLineController) InitRoutes(router *gin.Engine) {
 // @Security ApiKeyAuth
 // @Success 201
 // @Failure 400 {object} string
-// @Router /contact-line [post]
+// @Router /contact-lines [post]
 func (controller ContactLineController) CreateContactLine(c *gin.Context) {
 	var contactLine request.CreateContactLine
 
@@ -62,7 +62,7 @@ func (controller ContactLineController) CreateContactLine(c *gin.Context) {
 // @Param startAfter query string false "Start after"
 // @Success 200 {array} model.ContactLine "Success"
 // @Failure 404
-// @Router /contact-line [get]
+// @Router /contact-lines [get]
 func (controller ContactLineController) GetAll(c *gin.Context) {
 	pageSize, err := strconv.Atoi(c.DefaultQuery("size", "10"))
 

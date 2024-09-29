@@ -12,6 +12,7 @@ func FromImageToImageResponse(model *model.Image) (responseImage *response.Image
 		URL:         model.URL,
 		CreatedTime: model.CreatedTime,
 		IsApproved:  model.IsApproved,
+		ContentType: model.ContentType,
 	}
 }
 

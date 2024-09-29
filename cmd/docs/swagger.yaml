@@ -61,10 +61,14 @@ definitions:
     type: object
   response.Image:
     properties:
+      content_type:
+        type: string
       created_time:
         type: string
       id:
         type: string
+      is_approved:
+        type: boolean
       name:
         type: string
       url:
@@ -78,7 +82,7 @@ definitions:
 info:
   contact: {}
 paths:
-  /contact-line:
+  /contact-lines:
     get:
       consumes:
       - application/json
@@ -250,6 +254,14 @@ paths:
         in: query
         name: approved
         type: boolean
+      - description: Page size
+        in: query
+        name: size
+        type: integer
+      - description: Start after
+        in: query
+        name: startAfter
+        type: string
       produces:
       - application/json
       responses:
