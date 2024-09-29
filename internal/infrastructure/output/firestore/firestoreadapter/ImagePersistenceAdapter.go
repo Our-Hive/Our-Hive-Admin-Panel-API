@@ -54,8 +54,8 @@ func (i ImagePersistenceAdapter) GetImageFromDatabaseById(id string) (*model.Ima
 	return image, nil
 }
 
-func (i ImagePersistenceAdapter) GetImagesByApprovedStatus(approved bool) ([]*model.Image, error) {
-	images, err := i.imageRepository.GetImagesByApprovedStatus(approved)
+func (i ImagePersistenceAdapter) GetImagesByApprovedStatus(approved bool, pageSize int, startAfter string) ([]*model.Image, error) {
+	images, err := i.imageRepository.GetImagesByApprovedStatus(approved, pageSize, startAfter)
 
 	if err != nil {
 		return nil, err

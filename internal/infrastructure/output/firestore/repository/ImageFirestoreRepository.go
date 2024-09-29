@@ -115,9 +115,24 @@ func (i ImageFirestoreRepository) GetImageFromCollectionById(id string) (*model.
 	return image, nil
 }
 
-func (i ImageFirestoreRepository) GetImagesByApprovedStatus(approved bool) ([]*model.Image, error) {
+func (i ImageFirestoreRepository) GetImagesByApprovedStatus(approved bool, pageSize int, startAfter string) ([]*model.Image, error) {
 	var images []*model.Image
-	iter := i.client.Collection(i.collection).Where("IsApproved", "==", approved).Documents(i.ctx)
+	//iter := i.client.Collection(i.collection).Where("IsApproved", "==", approved).Documents(i.ctx)
+	var query firestore.Query
+
+	if startAfter != "" {
+		doc, err := i.client.Collection(i.collection).Doc(startAfter).Get(i.ctx)
+
+		if err != nil {
+			return nil, err
+		}
+
+		query = i.client.Collection(i.collection).Where("IsApproved", "==", approved).OrderBy("UpdatedTime", firestore.Desc).StartAfter(doc.Data()["Name"]).Limit(pageSize)
+	} else {
+		query = i.client.Collection(i.collection).Where("IsApproved", "==", approved).OrderBy("UpdatedTime", firestore.Desc).Limit(pageSize)
+	}
+
+	iter := query.Documents(i.ctx)
 
 	for {
 		doc, err := iter.Next()

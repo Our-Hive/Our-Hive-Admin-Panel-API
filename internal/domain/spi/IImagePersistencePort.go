@@ -7,5 +7,5 @@ type IImagePersistencePort interface {
 	GetImageFromDatabaseByName(fileName string) (*model.Image, error)
 	GetAllImagesFromDatabase(pageSize int, startAfter string) ([]*model.Image, error)
 	GetImageFromDatabaseById(id string) (*model.Image, error)
-	GetImagesByApprovedStatus(approved bool) ([]*model.Image, error)
+	GetImagesByApprovedStatus(approved bool, pageSize int, startAfter string) ([]*model.Image, error)
 }

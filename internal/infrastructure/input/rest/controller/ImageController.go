@@ -65,6 +65,8 @@ func (i ImageController) GetAll(c *gin.Context) {
 // @Produce  json
 // @Security ApiKeyAuth
 // @Param approved query bool false "Approved"
+// @Param size query int false "Page size"
+// @Param startAfter query string false "Start after"
 // @Success 200 {array} response.Image "Success"
 // @Failure 404
 // @Router /images/approval [get]
@@ -76,7 +78,16 @@ func (i ImageController) GetByApprovalStatus(c *gin.Context) {
 		return
 	}
 
-	images, httpStatus, err := i.imageHandler.GetByApprovedStatus(approved)
+	pageSize, err := strconv.Atoi(c.DefaultQuery("size", "10"))
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	startAfter := c.DefaultQuery("startAfter", "")
+
+	images, httpStatus, err := i.imageHandler.GetByApprovedStatus(approved, pageSize, startAfter)
 
 	if err != nil {
 		c.JSON(httpStatus, gin.H{"error": err.Error()})

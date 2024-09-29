@@ -72,7 +72,9 @@ func (i ImageUseCase) ApproveImage(id string) error {
 		return &domainerror.ImageNotFoundError{FileName: id}
 	}
 
-	image.IsApproved = true
+	oldStatus := image.IsApproved
+
+	image.IsApproved = !oldStatus
 
 	err = i.imagePersistencePort.SaveImageInDatabase(image)
 
@@ -83,8 +85,8 @@ func (i ImageUseCase) ApproveImage(id string) error {
 	return nil
 }
 
-func (i ImageUseCase) GetImagesByApprovedStatus(approved bool) ([]*model.Image, error) {
-	images, err := i.imagePersistencePort.GetImagesByApprovedStatus(approved)
+func (i ImageUseCase) GetImagesByApprovedStatus(approved bool, pageSize int, startAfter string) ([]*model.Image, error) {
+	images, err := i.imagePersistencePort.GetImagesByApprovedStatus(approved, pageSize, startAfter)
 
 	if err != nil {
 		return nil, err

@@ -50,8 +50,8 @@ func (i ImageHandler) Approve(id string) (httpStatus int, err error) {
 	return http.StatusNoContent, nil
 }
 
-func (i ImageHandler) GetByApprovedStatus(approved bool) (images []*response.Image, httpStatus int, err error) {
-	retrievedImages, err := i.imageServicePort.GetImagesByApprovedStatus(approved)
+func (i ImageHandler) GetByApprovedStatus(approved bool, pageSize int, startAfter string) (images []*response.Image, httpStatus int, err error) {
+	retrievedImages, err := i.imageServicePort.GetImagesByApprovedStatus(approved, pageSize, startAfter)
 
 	var noDataFoundError *domainerror.NoDataFound
 	if errors.As(err, &noDataFoundError) {
