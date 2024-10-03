@@ -7,6 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
+	"github.com/gin-contrib/cors"
 )
 
 func main() {
@@ -14,7 +15,13 @@ func main() {
 	infrastructure.InitializeFirebase()
 
 	router := gin.Default()
-
+	// Enable CORS for localhost:4200
+	router.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"http://localhost:4200"},
+		AllowHeaders:     []string{"Origin", "Content-Type", "Accept", "Authorization"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+	}))
 	generationController := infrastructure.InitializeGenerationController()
 	generationController.InitRoutes(router)
 
