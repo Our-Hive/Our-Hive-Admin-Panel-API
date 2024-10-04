@@ -497,16 +497,16 @@ const docTemplate = `{
         "response.Image": {
             "type": "object",
             "properties": {
-                "content_type": {
+                "contentType": {
                     "type": "string"
                 },
-                "created_time": {
+                "createdTime": {
                     "type": "string"
                 },
                 "id": {
                     "type": "string"
                 },
-                "is_approved": {
+                "isApproved": {
                     "type": "boolean"
                 },
                 "name": {
