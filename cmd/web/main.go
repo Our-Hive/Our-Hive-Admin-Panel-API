@@ -4,10 +4,10 @@ import (
 	_ "github.com/Our-Hive/Our-Hive-Admin-Panel-API/cmd/docs"
 	"github.com/Our-Hive/Our-Hive-Admin-Panel-API/internal/configuration"
 	"github.com/Our-Hive/Our-Hive-Admin-Panel-API/internal/infrastructure"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
-	"github.com/gin-contrib/cors"
 )
 
 func main() {
@@ -21,6 +21,7 @@ func main() {
 		AllowHeaders:     []string{"Origin", "Content-Type", "Accept", "Authorization"},
 		ExposeHeaders:    []string{"Content-Length"},
 		AllowCredentials: true,
+		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE"},
 	}))
 	generationController := infrastructure.InitializeGenerationController()
 	generationController.InitRoutes(router)
