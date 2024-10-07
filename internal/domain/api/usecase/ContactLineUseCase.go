@@ -6,6 +6,7 @@ import (
 	"github.com/Our-Hive/Our-Hive-Admin-Panel-API/internal/domain/domainerror"
 	"github.com/Our-Hive/Our-Hive-Admin-Panel-API/internal/domain/model"
 	"github.com/Our-Hive/Our-Hive-Admin-Panel-API/internal/domain/spi"
+	"strings"
 )
 
 // ContactLineUseCase implements IContactLineServicePort
@@ -59,4 +60,34 @@ func (c ContactLineUseCase) GetAllContactLines(pageSize int, startAfter string) 
 	}
 
 	return lines, nil
+}
+
+func (c ContactLineUseCase) UpdateContactLine(line *model.ContactLine) (err error) {
+	foundLine, _ := c.contactLinePersistencePort.GetContactLineFromDatabaseByID(line.ID)
+
+	if foundLine == nil {
+		return &domainerror.ContactLineNotFoundError{
+			Name: line.ID,
+		}
+	}
+
+	updateContactLineFields(foundLine, line)
+
+	err = c.contactLinePersistencePort.UpdateContactLineInDatabase(foundLine)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func updateContactLineFields(foundLine, line *model.ContactLine) {
+	if strings.TrimSpace(line.Name) != "" {
+		foundLine.Name = line.Name
+	}
+
+	if strings.TrimSpace(line.Description) != "" {
+		foundLine.Description = line.Description
+	}
 }

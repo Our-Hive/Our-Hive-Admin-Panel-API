@@ -61,3 +61,32 @@ func (c ContactLineHandler) GetAll(pageSize int, startAfter string) (contactLine
 
 	return contactLines, http.StatusOK, nil
 }
+
+func (c ContactLineHandler) Update(id string, request *request.UpdateContactLine) (httpStatus int, err error) {
+	validate := validator.New()
+
+	err = validate.Struct(request)
+
+	var validationErrors validator.ValidationErrors
+	if errors.As(err, &validationErrors) {
+		return http.StatusBadRequest, validationErrors
+	}
+
+	contactLine := &model.ContactLine{
+		ID:          id,
+		Name:        request.Name,
+		Description: request.Description,
+	}
+	err = c.contactLineServicePort.UpdateContactLine(contactLine)
+
+	var contactLineNotFoundError *domainerror.ContactLineNotFoundError
+	if errors.As(err, &contactLineNotFoundError) {
+		return http.StatusNotFound, contactLineNotFoundError
+	}
+
+	if err != nil {
+		return http.StatusInternalServerError, err
+	}
+
+	return http.StatusOK, nil
+}

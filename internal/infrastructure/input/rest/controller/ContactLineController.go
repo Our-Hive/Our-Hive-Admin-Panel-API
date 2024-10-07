@@ -20,6 +20,7 @@ func NewContactLineController(contactLineHandler application.IContactLineHandler
 func (controller ContactLineController) InitRoutes(router *gin.Engine) {
 	router.POST("/contact-lines", security.JwtMiddleware, security.AdminRoleMiddleware, controller.CreateContactLine)
 	router.GET("/contact-lines", security.JwtMiddleware, controller.GetAll)
+	router.PATCH("/contact-lines/:id", security.JwtMiddleware, security.AdminRoleMiddleware, controller.UpdateContactLine)
 }
 
 // CreateContactLine godoc
@@ -81,4 +82,36 @@ func (controller ContactLineController) GetAll(c *gin.Context) {
 	}
 
 	c.JSON(httpStatus, contactLines)
+}
+
+// UpdateContactLine godoc
+// @Summary Update a contact line
+// @Description Update a contact line
+// @Tags Contact Line
+// @Accept json
+// @Produce json
+// @Param id path string true "Contact Line ID"
+// @Param body body request.CreateContactLine true "Contact Line"
+// @Security ApiKeyAuth
+// @Success 204
+// @Failure 400 {object} string
+// @Router /contact-lines/{id} [patch]
+func (controller ContactLineController) UpdateContactLine(c *gin.Context) {
+	id := c.Param("id")
+
+	var contactLine request.UpdateContactLine
+
+	if err := c.ShouldBindJSON(&contactLine); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	httpStatus, err := controller.contactLineHandler.Update(id, &contactLine)
+
+	if err != nil {
+		c.JSON(httpStatus, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.Status(httpStatus)
 }

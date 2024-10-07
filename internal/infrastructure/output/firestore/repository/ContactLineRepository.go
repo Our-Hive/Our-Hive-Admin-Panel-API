@@ -93,3 +93,31 @@ func (c ContactLineRepository) GetAllContactLinesFromCollection(pageSize int, st
 
 	return contactLines, nil
 }
+
+func (c ContactLineRepository) GetContactLineFromCollectionByID(id string) (*model.ContactLine, error) {
+	doc, err := c.client.Collection(c.collection).Doc(id).Get(c.ctx)
+
+	if err != nil {
+		return nil, err
+	}
+
+	var line model.ContactLine
+
+	err = doc.DataTo(&line)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &line, nil
+}
+
+func (c ContactLineRepository) UpdateContactLineInCollection(contactLine *model.ContactLine) error {
+	_, err := c.client.Collection(c.collection).Doc(contactLine.ID).Set(c.ctx, contactLine)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

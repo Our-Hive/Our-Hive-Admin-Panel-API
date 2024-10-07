@@ -43,3 +43,23 @@ func (c ContactLinePersistenceAdapter) GetAllContactLinesFromDatabase(pageSize i
 
 	return lines, nil
 }
+
+func (c ContactLinePersistenceAdapter) GetContactLineFromDatabaseByID(id string) (*model.ContactLine, error) {
+	line, err := c.contactLineRepository.GetContactLineFromCollectionByID(id)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return line, nil
+}
+
+func (c ContactLinePersistenceAdapter) UpdateContactLineInDatabase(line *model.ContactLine) error {
+	err := c.contactLineRepository.UpdateContactLineInCollection(line)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

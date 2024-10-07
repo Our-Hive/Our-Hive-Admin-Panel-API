@@ -6,4 +6,5 @@ type IContactLineServicePort interface {
 	CreateContactLine(line *model.ContactLine) (err error)
 	GetContactLineByName(name string) (*model.ContactLine, error)
 	GetAllContactLines(pageSize int, startAfter string) ([]*model.ContactLine, error)
+	UpdateContactLine(line *model.ContactLine) (err error)
 }

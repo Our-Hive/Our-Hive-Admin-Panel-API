@@ -8,4 +8,5 @@ import (
 type IContactLineHandler interface {
 	Create(request *request.CreateContactLine) (httpStatus int, err error)
 	GetAll(pageSize int, startAfter string) (contactLines []*model.ContactLine, httpStatus int, err error)
+	Update(id string, request *request.UpdateContactLine) (httpStatus int, err error)
 }
