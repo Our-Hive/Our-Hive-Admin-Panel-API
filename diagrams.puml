@@ -1,0 +1,495 @@
+@startuml
+namespace api {
+    interface IContactLineServicePort  {
+        + CreateContactLine(line *model.ContactLine) error
+        + GetContactLineByName(name string) (*model.ContactLine, error)
+        + GetAllContactLines(pageSize int, startAfter string) ([]*model.ContactLine, error)
+
+    }
+    interface IDigitalContentServicePort  {
+        + CreateDigitalContent(content *model.DigitalContent) error
+
+    }
+    interface IGenerationServicePort  {
+        + GenerateImage(prompt string, filename string) (string, error)
+
+    }
+    interface IImageDataServicePort  {
+        + SaveImageData(imageData *model.ImageData) (string, *model.ImageData, error)
+
+    }
+    interface IImageGenerationServicePort  {
+        + GenerateImage(prompt string) ([]byte, error)
+
+    }
+    interface IImageServicePort  {
+        + SaveImage(image *model.Image) error
+        + GetImageByName(fileName string) (*model.Image, error)
+        + GetAllImages(pageSize int, startAfter string) ([]*model.Image, error)
+        + ApproveImage(id string) error
+        + GetImagesByApprovedStatus(approved bool) ([]*model.Image, error)
+
+    }
+    interface IPromptClassificationServicePort  {
+        + IsEthical(prompt string) (bool, error)
+
+    }
+    interface IUploadServicePort  {
+        + UploadFile(imageData *model.ImageData, contentType string) (string, error)
+
+    }
+}
+
+
+namespace application {
+    interface IContactLineHandler  {
+        + Create(request *request.CreateContactLine) (int, error)
+        + GetAll(pageSize int, startAfter string) ([]*model.ContactLine, int, error)
+
+    }
+    interface IGenerationHandler  {
+        + GenerateIAImage(request *request.GenerateIAImage) (*response.UploadImage, int, error)
+
+    }
+    interface IImageHandler  {
+        + GetAll(pageSize int, startAfter string) ([]*response.Image, int, error)
+        + Approve(id string) (int, error)
+        + GetByApprovedStatus(approved bool) ([]*response.Image, int, error)
+
+    }
+    interface IRecommendedContentHandler  {
+        + Create(request *request.CreateDigitalContent) (int, error)
+
+    }
+    interface IUploadHandler  {
+        + Upload(file []byte, fileName string, contentType string) (*response.UploadImage, int, error)
+
+    }
+}
+
+
+namespace bucket {
+    class ImageBucket << (S,Aquamarine) >> {
+        - bucket *storage.BucketHandle
+        - ctx context.Context
+
+        + SaveImageToFBStorage(imageData *model.ImageData) (string, error)
+        + GetImageUrl(filename string, id string) string
+
+    }
+}
+
+
+namespace controller {
+    class ContactLineController << (S,Aquamarine) >> {
+        - contactLineHandler application.IContactLineHandler
+
+        + InitRoutes(router *gin.Engine) 
+        + CreateContactLine(c *gin.Context) 
+        + GetAll(c *gin.Context) 
+
+    }
+    class GenerationController << (S,Aquamarine) >> {
+        - generationHandler application.IGenerationHandler
+
+        + InitRoutes(router *gin.Engine) 
+        + GenerateIAImage(c *gin.Context) 
+
+    }
+    class ImageController << (S,Aquamarine) >> {
+        - imageHandler application.IImageHandler
+        - uploadHandler application.IUploadHandler
+
+        + InitRoutes(router *gin.Engine) 
+        + GetAll(c *gin.Context) 
+        + GetByApprovalStatus(c *gin.Context) 
+        + Upload(c *gin.Context) 
+        + Approve(c *gin.Context) 
+
+    }
+    class RecommendedContentController << (S,Aquamarine) >> {
+        - recommendedContentHandler application.IRecommendedContentHandler
+
+        + InitRoutes(router *gin.Engine) 
+        + CreateRecommendedContent(c *gin.Context) 
+
+    }
+}
+
+
+namespace domainerror {
+    class ContactLineAlreadyExistsError << (S,Aquamarine) >> {
+        + Name string
+
+        + Error() string
+
+    }
+    class ContactLineNotFoundError << (S,Aquamarine) >> {
+        + Name string
+
+        + Error() string
+
+    }
+    class DigitalContentAlreadyExistsError << (S,Aquamarine) >> {
+        + Title string
+
+        + Error() string
+
+    }
+    class ImageAlreadyExistsError << (S,Aquamarine) >> {
+        + FileName string
+
+        + Error() string
+
+    }
+    class ImageNotFoundError << (S,Aquamarine) >> {
+        + FileName string
+
+        + Error() string
+
+    }
+    class IsNotEthicalPromptError << (S,Aquamarine) >> {
+        + Message string
+
+        + Error() string
+
+    }
+    class NoDataFound << (S,Aquamarine) >> {
+        + Message string
+
+        + Error() string
+
+    }
+}
+
+
+namespace externaladapter {
+    class HuggingFaceClassificationAdapter << (S,Aquamarine) >> {
+        - inferenceClient *huggingface.InferenceClient
+
+        + IsEthical(prompt string) (bool, error)
+
+    }
+    class StableDiffusionAdapter << (S,Aquamarine) >> {
+        - token string
+
+        + GenerateImage(prompt string) ([]byte, error)
+
+    }
+}
+
+"api.IPromptClassificationServicePort" <|-- "externaladapter.HuggingFaceClassificationAdapter"
+"api.IImageGenerationServicePort" <|-- "externaladapter.StableDiffusionAdapter"
+
+namespace externalerror {
+    class ClassificationError << (S,Aquamarine) >> {
+        + Message string
+
+        + Error() string
+
+    }
+    class MarshallingError << (S,Aquamarine) >> {
+        + Message string
+
+        + Error() string
+
+    }
+    class RequestCreationError << (S,Aquamarine) >> {
+        + Message string
+
+        + Error() string
+
+    }
+    class RequestSendingError << (S,Aquamarine) >> {
+        + Message string
+
+        + Error() string
+
+    }
+    class ResponseClosingError << (S,Aquamarine) >> {
+        + Message string
+
+        + Error() string
+
+    }
+}
+
+
+namespace firestoreadapter {
+    class ContactLinePersistenceAdapter << (S,Aquamarine) >> {
+        - contactLineRepository *repository.ContactLineRepository
+
+        + SaveContactLineInDatabase(line *model.ContactLine) error
+        + GetContactLineFromDatabaseByName(name string) (*model.ContactLine, error)
+        + GetAllContactLinesFromDatabase(pageSize int, startAfter string) ([]*model.ContactLine, error)
+
+    }
+    class DigitalContentPersistenceAdapter << (S,Aquamarine) >> {
+        - recommendedContentRepository *repository.RecommendedContentRepository
+
+        + SaveDigitalContentInDatabase(content *model.DigitalContent) error
+        + GetDigitalContentFromDatabaseByTitle(title string) (*model.DigitalContent, error)
+
+    }
+    class ImagePersistenceAdapter << (S,Aquamarine) >> {
+        - imageRepository *repository.ImageFirestoreRepository
+
+        + SaveImageInDatabase(image *model.Image) error
+        + GetImageFromDatabaseByName(fileName string) (*model.Image, error)
+        + GetAllImagesFromDatabase(pageSize int, startAfter string) ([]*model.Image, error)
+        + GetImageFromDatabaseById(id string) (*model.Image, error)
+        + GetImagesByApprovedStatus(approved bool) ([]*model.Image, error)
+
+    }
+}
+
+"spi.IContactLinePersistencePort" <|-- "firestoreadapter.ContactLinePersistenceAdapter"
+"spi.IDigitalContentPersistencePort" <|-- "firestoreadapter.DigitalContentPersistenceAdapter"
+"spi.IImagePersistencePort" <|-- "firestoreadapter.ImagePersistenceAdapter"
+
+namespace handler {
+    class ContactLineHandler << (S,Aquamarine) >> {
+        - contactLineServicePort api.IContactLineServicePort
+
+        + Create(request *request.CreateContactLine) (int, error)
+        + GetAll(pageSize int, startAfter string) ([]*model.ContactLine, int, error)
+
+    }
+    class GenerationHandler << (S,Aquamarine) >> {
+        - generationUseCase api.IGenerationServicePort
+
+        + GenerateIAImage(request *request.GenerateIAImage) (*response.UploadImage, int, error)
+
+    }
+    class ImageHandler << (S,Aquamarine) >> {
+        - imageServicePort api.IImageServicePort
+
+        + GetAll(pageSize int, startAfter string) ([]*response.Image, int, error)
+        + Approve(id string) (int, error)
+        + GetByApprovedStatus(approved bool) ([]*response.Image, int, error)
+
+    }
+    class RecommendedContentHandler << (S,Aquamarine) >> {
+        - digitalContentServicePort api.IDigitalContentServicePort
+
+        + Create(request *request.CreateDigitalContent) (int, error)
+
+    }
+    class UploadHandler << (S,Aquamarine) >> {
+        - uploadServicePort api.IUploadServicePort
+
+        + Upload(file []byte, fileName string, contentType string) (*response.UploadImage, int, error)
+
+    }
+}
+
+"application.IContactLineHandler" <|-- "handler.ContactLineHandler"
+"application.IGenerationHandler" <|-- "handler.GenerationHandler"
+"application.IImageHandler" <|-- "handler.ImageHandler"
+"application.IRecommendedContentHandler" <|-- "handler.RecommendedContentHandler"
+"application.IUploadHandler" <|-- "handler.UploadHandler"
+
+namespace model {
+    class ContactLine << (S,Aquamarine) >> {
+        + ID string
+        + Name string
+        + Description string
+
+    }
+    class DigitalContent << (S,Aquamarine) >> {
+        + ID string
+        + Title string
+        + Description string
+        + URL string
+
+    }
+    class Image << (S,Aquamarine) >> {
+        + ID string
+        + Name string
+        + URL string
+        + Size int64
+        + ContentType string
+        + IsApproved bool
+        + CreatedTime time.Time
+        + UpdatedTime time.Time
+
+    }
+    class ImageData << (S,Aquamarine) >> {
+        + ID string
+        + FileName string
+        + Data []byte
+
+    }
+    class Token << (S,Aquamarine) >> {
+        + Sub int
+        + Role string
+
+    }
+}
+
+
+namespace repository {
+    class ContactLineRepository << (S,Aquamarine) >> {
+        - client *firestore.Client
+        - ctx context.Context
+        - collection string
+
+        + SaveContactLineInCollection(contactLine *model.ContactLine) error
+        + GetContactLineFromCollectionByName(name string) (*model.ContactLine, error)
+        + GetAllContactLinesFromCollection(pageSize int, startAfter string) ([]*model.ContactLine, error)
+
+    }
+    class ImageFirestoreRepository << (S,Aquamarine) >> {
+        - client *firestore.Client
+        - ctx context.Context
+        - collection string
+
+        + SaveImageInCollection(image *model.Image) error
+        + GetImageFromCollectionByName(fileName string) (*model.Image, error)
+        + GetAllImagesFromCollection(pageSize int, startAfter string) ([]*model.Image, error)
+        + GetImageFromCollectionById(id string) (*model.Image, error)
+        + GetImagesByApprovedStatus(approved bool) ([]*model.Image, error)
+
+    }
+    class RecommendedContentRepository << (S,Aquamarine) >> {
+        - client *firestore.Client
+        - ctx context.Context
+        - collection string
+
+        + SaveRecommendedContentInCollection(recommendedContent *model.DigitalContent) error
+        + GetRecommendedContentFromCollectionByTitle(title string) (*model.DigitalContent, error)
+
+    }
+}
+
+
+namespace request {
+    class CreateContactLine << (S,Aquamarine) >> {
+        + Name string
+        + Description string
+
+    }
+    class CreateDigitalContent << (S,Aquamarine) >> {
+        + Title string
+        + Description string
+        + URL string
+
+    }
+    class GenerateIAImage << (S,Aquamarine) >> {
+        + Prompt string
+        + FileName string
+
+    }
+}
+
+
+namespace response {
+    class Image << (S,Aquamarine) >> {
+        + ID string
+        + Name string
+        + URL string
+        + CreatedTime time.Time
+
+    }
+    class UploadImage << (S,Aquamarine) >> {
+        + Url string
+
+    }
+}
+
+
+namespace spi {
+    interface IContactLinePersistencePort  {
+        + SaveContactLineInDatabase(line *model.ContactLine) error
+        + GetContactLineFromDatabaseByName(name string) (*model.ContactLine, error)
+        + GetAllContactLinesFromDatabase(pageSize int, startAfter string) ([]*model.ContactLine, error)
+
+    }
+    interface IDigitalContentPersistencePort  {
+        + SaveDigitalContentInDatabase(content *model.DigitalContent) error
+        + GetDigitalContentFromDatabaseByTitle(title string) (*model.DigitalContent, error)
+
+    }
+    interface IImagePersistencePort  {
+        + SaveImageInDatabase(image *model.Image) error
+        + GetImageFromDatabaseByName(fileName string) (*model.Image, error)
+        + GetAllImagesFromDatabase(pageSize int, startAfter string) ([]*model.Image, error)
+        + GetImageFromDatabaseById(id string) (*model.Image, error)
+        + GetImagesByApprovedStatus(approved bool) ([]*model.Image, error)
+
+    }
+    interface IImageStoragePort  {
+        + SaveImageInStorage(image *model.ImageData) (string, error)
+
+    }
+}
+
+
+namespace storageadapter {
+    class ImageStorageAdapter << (S,Aquamarine) >> {
+        - imageBucket *bucket.ImageBucket
+
+        + SaveImageInStorage(image *model.ImageData) (string, error)
+
+    }
+}
+
+"spi.IImageStoragePort" <|-- "storageadapter.ImageStorageAdapter"
+
+namespace usecase {
+    class ContactLineUseCase << (S,Aquamarine) >> {
+        - contactLinePersistencePort spi.IContactLinePersistencePort
+
+        + CreateContactLine(line *model.ContactLine) error
+        + GetContactLineByName(name string) (*model.ContactLine, error)
+        + GetAllContactLines(pageSize int, startAfter string) ([]*model.ContactLine, error)
+
+    }
+    class DigitalContentUseCase << (S,Aquamarine) >> {
+        - digitalContentPersistencePort spi.IDigitalContentPersistencePort
+
+        + CreateDigitalContent(content *model.DigitalContent) error
+
+    }
+    class GenerationUseCase << (S,Aquamarine) >> {
+        - imageServicePort api.IImageServicePort
+        - imageDataServicePort api.IImageDataServicePort
+        - promptClassificationServicePort api.IPromptClassificationServicePort
+        - imageGenerationServicePort api.IImageGenerationServicePort
+
+        + GenerateImage(prompt string, filename string) (string, error)
+
+    }
+    class ImageDataUseCase << (S,Aquamarine) >> {
+        - imageStoragePort spi.IImageStoragePort
+
+        + SaveImageData(imageData *model.ImageData) (string, *model.ImageData, error)
+
+    }
+    class ImageUseCase << (S,Aquamarine) >> {
+        - imagePersistencePort spi.IImagePersistencePort
+
+        + SaveImage(image *model.Image) error
+        + GetImageByName(fileName string) (*model.Image, error)
+        + GetAllImages(pageSize int, startAfter string) ([]*model.Image, error)
+        + ApproveImage(id string) error
+        + GetImagesByApprovedStatus(approved bool) ([]*model.Image, error)
+
+    }
+    class UploadUseCase << (S,Aquamarine) >> {
+        - imageServicePort api.IImageServicePort
+        - imageDataServicePort api.IImageDataServicePort
+
+        + UploadFile(imageData *model.ImageData, contentType string) (string, error)
+
+    }
+}
+
+"api.IContactLineServicePort" <|-- "usecase.ContactLineUseCase"
+"api.IDigitalContentServicePort" <|-- "usecase.DigitalContentUseCase"
+"api.IGenerationServicePort" <|-- "usecase.GenerationUseCase"
+"api.IImageDataServicePort" <|-- "usecase.ImageDataUseCase"
+"api.IImageServicePort" <|-- "usecase.ImageUseCase"
+"api.IUploadServicePort" <|-- "usecase.UploadUseCase"
+
+@enduml

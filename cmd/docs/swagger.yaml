@@ -1,0 +1,360 @@
+definitions:
+  model.ContactLine:
+    properties:
+      description:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+    type: object
+  model.DigitalContent:
+    properties:
+      description:
+        type: string
+      id:
+        type: string
+      title:
+        type: string
+      url:
+        type: string
+    type: object
+  request.CreateContactLine:
+    properties:
+      description:
+        minLength: 1
+        type: string
+      name:
+        minLength: 1
+        type: string
+    required:
+    - description
+    - name
+    type: object
+  request.CreateDigitalContent:
+    properties:
+      description:
+        minLength: 1
+        type: string
+      title:
+        minLength: 1
+        type: string
+      url:
+        minLength: 1
+        type: string
+    required:
+    - description
+    - title
+    - url
+    type: object
+  request.GenerateIAImage:
+    properties:
+      file_name:
+        minLength: 1
+        type: string
+      prompt:
+        minLength: 1
+        type: string
+    required:
+    - file_name
+    - prompt
+    type: object
+  response.Image:
+    properties:
+      contentType:
+        type: string
+      createdTime:
+        type: string
+      id:
+        type: string
+      isApproved:
+        type: boolean
+      name:
+        type: string
+      url:
+        type: string
+    type: object
+  response.UploadImage:
+    properties:
+      url:
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /contact-lines:
+    get:
+      consumes:
+      - application/json
+      description: Get all contact lines with pagination
+      parameters:
+      - description: Page size
+        in: query
+        name: size
+        type: integer
+      - description: Start after
+        in: query
+        name: startAfter
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            items:
+              $ref: '#/definitions/model.ContactLine'
+            type: array
+        "404":
+          description: Not Found
+      security:
+      - ApiKeyAuth: []
+      summary: Get all contact lines
+      tags:
+      - Contact Line
+    post:
+      consumes:
+      - application/json
+      description: Create a contact line
+      parameters:
+      - description: Contact Line
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/request.CreateContactLine'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Create a contact line
+      tags:
+      - Contact Line
+  /contact-lines/{id}:
+    patch:
+      consumes:
+      - application/json
+      description: Update a contact line
+      parameters:
+      - description: Contact Line ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Contact Line
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/request.CreateContactLine'
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Update a contact line
+      tags:
+      - Contact Line
+  /generation:
+    post:
+      consumes:
+      - application/json
+      description: Generate an IA image
+      parameters:
+      - description: Generate IA Image
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/request.GenerateIAImage'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/response.UploadImage'
+        "400":
+          description: Bad Request
+        "409":
+          description: Conflict
+        "422":
+          description: Unprocessable Entity
+      security:
+      - ApiKeyAuth: []
+      summary: Generate IA Image
+      tags:
+      - generation
+  /images:
+    get:
+      consumes:
+      - application/json
+      description: Get all images with pagination
+      parameters:
+      - description: Page size
+        in: query
+        name: size
+        type: integer
+      - description: Start after
+        in: query
+        name: startAfter
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            items:
+              $ref: '#/definitions/response.Image'
+            type: array
+        "404":
+          description: Not Found
+      security:
+      - ApiKeyAuth: []
+      summary: Get all images
+      tags:
+      - images
+    post:
+      consumes:
+      - multipart/form-data
+      description: Upload an image
+      parameters:
+      - description: File
+        in: formData
+        name: image
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/response.UploadImage'
+        "400":
+          description: Bad Request
+      security:
+      - ApiKeyAuth: []
+      summary: Upload an image
+      tags:
+      - images
+  /images/{id}:
+    put:
+      consumes:
+      - application/json
+      description: Approve an image
+      parameters:
+      - description: Image ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+      security:
+      - ApiKeyAuth: []
+      summary: Approve an image
+      tags:
+      - images
+  /images/approval:
+    get:
+      consumes:
+      - application/json
+      description: Get all images by approved status
+      parameters:
+      - description: Approved
+        in: query
+        name: approved
+        type: boolean
+      - description: Page size
+        in: query
+        name: size
+        type: integer
+      - description: Start after
+        in: query
+        name: startAfter
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            items:
+              $ref: '#/definitions/response.Image'
+            type: array
+        "404":
+          description: Not Found
+      security:
+      - ApiKeyAuth: []
+      summary: Get all images by approved status
+      tags:
+      - images
+  /recommended-content:
+    get:
+      consumes:
+      - application/json
+      description: Get all recommended content
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.DigitalContent'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Get all recommended content
+      tags:
+      - Recommended Content
+    post:
+      consumes:
+      - application/json
+      description: Create a new recommended content
+      parameters:
+      - description: Recommended Content
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/request.CreateDigitalContent'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Create a new recommended content
+      tags:
+      - Recommended Content
+swagger: "2.0"
